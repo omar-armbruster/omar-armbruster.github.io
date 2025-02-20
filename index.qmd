@@ -1,5 +1,5 @@
 ---
-title: "Omar Armbruster's Blog"
+title: "Omar Armbruster's Machine Learning Blog"
 listing:
   contents: posts
   sort: "date desc"
