@@ -241,6 +241,7 @@ window.Quarto = {
 
 
 
+<p><img src="penguing.jpg" width="325"></p>
 <section id="abstract" class="level1">
 <h1>Abstract</h1>
 <p>Machine learning methods provide the opportunity to extract features from a dataset that would otherwise be hidden. In this blog post, we examine Linear Regression and Random Forest Classifier models and train them on the Palmer Penguins dataset to show that we can reliably identify which of three species a penguin belongs to based on three of their characteristics. Using an exhaustive search, we identify that using sex, culmen length, and clumen depth, we can predict a penguin’s species with at least a 98% accuracy.</p>
@@ -248,7 +249,7 @@ window.Quarto = {
 <section id="loading-the-data" class="level1">
 <h1>Loading the data</h1>
 <p>In order to begin our deep dive into the Palmer Penguins dataset, we must first load the data into our python notebook, which we achieve with the read_csv function from the pandas library. As we will see momentarily, the species labels contain the english and latin names for the penguins. For the sake of simplicity, we extract the first word in each species label, leaving us with three simple species labels: Chinstrap, Gentoo, and Adelie.</p>
-<div id="cell-3" class="cell" data-execution_count="58">
+<div id="cell-4" class="cell" data-execution_count="58">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>train_url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/train.csv"</span></span>
@@ -256,7 +257,7 @@ window.Quarto = {
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"Species"</span>] <span class="op">=</span> train[<span class="st">"Species"</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.get(<span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>It’s always a good idea to get an idea of what the data looks like before diving into the analysis. Based on this snapshot of the data, we can start considering which qualitative and quantitative variables may be useful to us when fitting our models. Features like “studyName”, “Sample Number”, and “Individual ID” are likely not useful features (since they have nothing to do with the natural features of a penguin), but it may be worth looking at the other qualitative features like “Region”, “Island”, “Clutch Completion”, or “Sex”. Quantitative features like “Culmen Length”, “Culmen Depth”, and “Flipper Length” will also likely be useful.</p>
-<div id="cell-5" class="cell" data-execution_count="59">
+<div id="cell-6" class="cell" data-execution_count="59">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>train.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="59">
 <div>
@@ -396,14 +397,14 @@ window.Quarto = {
 <section id="exploratory-data-analysis" class="level1">
 <h1>Exploratory data analysis</h1>
 <p>Before we jump straight into model fitting, it’s a good idea to stop for a moment (Freeze if you will) and get an idea of which features will be most useful to our models. There are a variety of outcomes (an ocean of possibility perhaps?) that can arise based on which combinations of features we choose, so by examining the relationships between features of the data, we can get an idea for which features will produce the highest predictive accuracy. Using the matplotlib and seaborn packages, we can visualize our data, which may provide us with some of these insights.</p>
-<div id="cell-7" class="cell" data-execution_count="60">
+<div id="cell-8" class="cell" data-execution_count="60">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn.objects <span class="im">as</span> so</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Our scatterplot examines two qualitative variables: “Delta 13 C” and “Delta 15 N”, which are isotopes that were found in the blood of the Palmer Penguins (Don’t ever say that data science is easy; those penguins put their blood sweat and tears into this dataset!). Based on the scatterplot, the two isotopes do provide some amount of clustering between each species. However, the Adelie region does appear to overlap quite a bit with the other two regions, meaning that we would likely not want to use these features without a third feature to distinguish between penguins in the overlapping regions.</p>
 <p>The stack plot examines the quantity of penguins for each species on each of the three islands included in this study. It appears that Gentoo penguins only appear on Biscoe Island and Chinstrap penguins only appear on Dream Island, while Adelie penguins appear on all three islands. Based on this information, if we have the name of the island, we can determine if a penguin is not a Gentoo or not a Chinstrap. However, we cannot definitively determine which species the penguin is (unless it’s on Torgersen island where it’s likely an Adelie) without additional features.</p>
-<div id="cell-9" class="cell" data-execution_count="61">
+<div id="cell-10" class="cell" data-execution_count="61">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">4</span>))</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> sns.scatterplot(train, x <span class="op">=</span> <span class="st">'Delta 15 N (o/oo)'</span>, y <span class="op">=</span> <span class="st">'Delta 13 C (o/oo)'</span>, hue <span class="op">=</span> <span class="st">'Species'</span>, ax <span class="op">=</span> ax[<span class="dv">0</span>])</span>
@@ -419,7 +420,7 @@ window.Quarto = {
 </div>
 <p>We can also take a closer look at the quantitative variables by looking at the mean and standard deviation values of a variety of features for each species. If the mean is not within a standard deviation of the means of the other two species, then it is likely that that feature could be a distinguinshable trait. With all four of these features, it appears that at least two species are always within a standard deviation of one another, meaning none of these traits can be used alone to classify the penguins.</p>
 <p>Based on these obervations, it is likely that we will need to use some combination of features to fit an accurate model, as it appears that there is no feature or pair of features that can singlehandedly predict the species.</p>
-<div id="cell-11" class="cell" data-execution_count="62">
+<div id="cell-12" class="cell" data-execution_count="62">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>train.groupby(<span class="st">"Species"</span>).aggregate({<span class="st">'Flipper Length (mm)'</span>: [<span class="st">'mean'</span>, <span class="st">'std'</span>],</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">'Culmen Length (mm)'</span>: [<span class="st">'mean'</span>, <span class="st">'std'</span>],</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">'Culmen Depth (mm)'</span>: [<span class="st">'mean'</span>, <span class="st">'std'</span>],</span>
@@ -504,7 +505,7 @@ window.Quarto = {
 <section id="data-preparation" class="level1">
 <h1>Data Preparation</h1>
 <p>Our data requires a bit of preparation before it can be fed into our machine learning models. Our models only process quantitative variables, so we need to first represent our qualitative variables as numbers. Using the LabelEncoder, we convert the species labels to ternary form such that each species of penguin is represented by a <span class="math inline">\(0\)</span>, <span class="math inline">\(1\)</span>, or <span class="math inline">\(2\)</span>. We drop the qualitative features that are dependent on the study, rather than an observation made of a penguin, which allows us to isolate the features that could be used to identify a penguin even if it came from a completely different study. Using get_dummies(), we convert the remaining qualitative variables to a set of dummy columns, which express each qualitative outcome as booleans. Our prepare_data function returns X_train: the data as a set of binaries and quantiative variables, and y_train: the ternary set of labels corresponding to each penguin in the study, which we can plug straight into our machine learning models!</p>
-<div id="cell-13" class="cell" data-execution_count="63">
+<div id="cell-14" class="cell" data-execution_count="63">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> LabelEncoder</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>le <span class="op">=</span> LabelEncoder()</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>le.fit(train[<span class="st">"Species"</span>])</span>
@@ -521,7 +522,7 @@ window.Quarto = {
 <span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>X_train, y_train <span class="op">=</span> prepare_data(train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>From a brief examination of X_train, we can see that we successfully isolated the quantitative variables and converted the meaningful qualitative variables to a set of booleans!</p>
-<div id="cell-15" class="cell" data-execution_count="64">
+<div id="cell-16" class="cell" data-execution_count="64">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>X_train.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="64">
 <div>
@@ -643,7 +644,7 @@ window.Quarto = {
 <section id="model-and-feature-selection" class="level1">
 <h1>Model and Feature Selection</h1>
 <p>Our goal for our model is to select two quantitative features and a qualitative features that we can use to optimize the classification accuracy. For this analysis, we choose to do an exhaustive search, which tests the predictive accuracy of all combinations of one qualitative and two quantitative features and selects whichever combination scores the highest. Because we divided our qualitative features into dummy columns earlier, selecting qualitative features will involve using multiple qualitative columns (ex: using the “Island” feature will use three columns).</p>
-<div id="cell-17" class="cell" data-execution_count="65">
+<div id="cell-18" class="cell" data-execution_count="65">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> combinations</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>all_qual_cols <span class="op">=</span> [<span class="st">"Clutch Completion"</span>, <span class="st">"Sex"</span>, <span class="st">"Island"</span>]</span>
@@ -658,7 +659,7 @@ window.Quarto = {
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    col_combs.append(cols) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We first choose to examine the Logistic Regression model, which we use to determine which combinations of features score the highest. Iterating through the combinations of columns we created above, we can fit every possible combination of features to a Logistic Regression model and update our best score and best columns each time we find a model that works better than the previous best.</p>
-<div id="cell-19" class="cell">
+<div id="cell-20" class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>best_score <span class="op">=</span> <span class="dv">0</span></span>
@@ -674,26 +675,26 @@ window.Quarto = {
 <span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>        best_model <span class="op">=</span> LR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Our exhaustive search method returns that the three best features for classification are “Culmen Length”, “Culmen Depth”, and “Sex”. When using these three features on our training dataset, we achieve a classification accuracy of <span class="math inline">\(99.6\)</span>%!.</p>
-<div id="cell-21" class="cell" data-execution_count="67">
+<div id="cell-22" class="cell" data-execution_count="67">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(best_score, best_cols)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>0.99609375 ['Culmen Length (mm)', 'Culmen Depth (mm)', 'Sex_FEMALE', 'Sex_MALE']</code></pre>
 </div>
 </div>
 <p>The goal with building a machine learning classifier is to be able to accurately classify data that we don’t have the labels for. While a <span class="math inline">\(99.6\)</span>% accuracy is certaintly exciting, it is not as impressive when we consider that the model has already seen the data that it is making predictions for. To test how applicable the model will be to new data, we can employ cross-validation, which trains the model and scores its predictions based on different subsets of the training data. When we calculate the mean of each subset’s score, we find that the model has an average score of <span class="math inline">\(98.4\)</span>%, meaning that the model will likely perform well on new data and is not subject to overfitting! We can also use this cross-validation score as a comparison to other machine learning models to determine which will be most effective.</p>
-<div id="cell-23" class="cell" data-execution_count="73">
+<div id="cell-24" class="cell" data-execution_count="73">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>cv_scores_LR <span class="op">=</span> cross_val_score(LR, X_train[best_cols], y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="cell-24" class="cell" data-execution_count="74">
+<div id="cell-25" class="cell" data-execution_count="74">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cv_scores_LR.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="74">
 <pre><code>0.9844645550527904</code></pre>
 </div>
 </div>
 <p>For the sake of fairness, let’s take a look at a second machine learning model to see if we can improve upon the results of our Logistic Regression model. We can fit a Random Forest Classifier model just like we do with Logisitic Regression and we find that it achieves <span class="math inline">\(100\)</span>% accuracy on the training data set!</p>
-<div id="cell-26" class="cell" data-execution_count="69">
+<div id="cell-27" class="cell" data-execution_count="69">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestClassifier()</span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>RF.fit(X_train[best_cols], y_train)</span>
@@ -702,7 +703,7 @@ window.Quarto = {
 <pre><code>1.0</code></pre>
 </div>
 </div>
-<div id="cell-27" class="cell" data-execution_count="70">
+<div id="cell-28" class="cell" data-execution_count="70">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cv_scores_RF <span class="op">=</span> cross_val_score(RF, X_train[best_cols], y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cv_scores_RF.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="70">
@@ -710,7 +711,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Now comes the moment of truth: seeing how well our models work on a new set of data. We import and prepare the data the same way we did with our training data, which we then pass into each model’s scoring method. We need to be careful not to refit the models on this data, as the whole idea is to test how well our previous fitting works on new data. As we see below, the Logistic Regression and Random Forest Classifier models score <span class="math inline">\(100\)</span>% and <span class="math inline">\(98.5\)</span>% accuracy, respectively. Success!</p>
-<div id="cell-29" class="cell" data-execution_count="75">
+<div id="cell-30" class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>test_url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/test.csv"</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.read_csv(test_url)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>test[<span class="st">"Species"</span>] <span class="op">=</span> test[<span class="st">"Species"</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.get(<span class="dv">0</span>)</span>
@@ -727,7 +728,7 @@ window.Quarto = {
 <section id="visualizing-the-model" class="level1">
 <h1>Visualizing the Model</h1>
 <p>Using a decision regions plot, we can visualize how our model assigns its labels. We can plot the two quantitative variables against one another, which creates a coordinate system with each point on the graph representing an individual penguin. Our models seek to define boundaries between each cluster of points, which in theory should divide the data into groups based on species. Because of the slightly superior performance of the Logisitic Regression model, we will examine its decision regions for both its training and testing data.</p>
-<div id="cell-31" class="cell" data-execution_count="54">
+<div id="cell-32" class="cell" data-execution_count="54">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib <span class="im">import</span> pyplot <span class="im">as</span> plt</span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.patches <span class="im">import</span> Patch</span>
@@ -783,7 +784,7 @@ window.Quarto = {
 <span id="cb21-53"><a href="#cb21-53" aria-hidden="true" tabindex="-1"></a>      plt.tight_layout()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Below are the decision regions for the training dataset, divided by “Sex”, our selected qualitative variable. As we can see, the Logistic Regression model divides the coordinate space into three regions, each which correspond to a penguin species. When provided with new data, the model identifies where in the coordinate space that the new data point falls, and assigns a label based on whichever region it falls in. It appears that there are a few points that cross over to a different species’ region, which would account for the less than perfect accuracy we observed earlier. While our first instinct may be to try and fix the model so that it achieves perfect accuracy, this is not necessarily the goal, as redrawing our lines to accomodate for outliers will likely cause overfitting that will not translate well to new data. As such, these regions indicate a very strong classifier!</p>
-<div id="cell-33" class="cell" data-execution_count="55">
+<div id="cell-34" class="cell" data-execution_count="55">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot_regions(best_model, X_train[best_cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>C:\Users\omara\AppData\Local\Temp\ipykernel_24932\697242165.py:53: UserWarning: The figure layout has changed to tight
@@ -798,7 +799,7 @@ window.Quarto = {
 </div>
 </div>
 <p>Below shows the same decision regions applied to the testing data, and as we would expect, the new data aligns very well with our trained regions. Success Again!</p>
-<div id="cell-35" class="cell" data-execution_count="56">
+<div id="cell-36" class="cell" data-execution_count="56">
 <div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>plot_regions(best_model, X_test[best_cols], y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>C:\Users\omara\AppData\Local\Temp\ipykernel_24932\697242165.py:53: UserWarning: The figure layout has changed to tight
@@ -813,7 +814,7 @@ window.Quarto = {
 </div>
 </div>
 <p>As a final check, it helps to generate a confusion matrix, which compares the real labels to the predicted labels to show where the classifier is making mistakes. For example, we may notice that the model tends to sometimes classify Adelie penguins as Gentoo penguins but never Gentoo penguins as Adelie penguins. This would perhaps help us identify similar features between the two or would maybe indicate that our model needs more training to be able to distinguish between the two. In our case, our model is fairly accurate, so it is a little tricky to make any strong conclusions about the errors in the model. Based on the confusion matrix for the training data below, it appears that one of the Chinstrap penguins was classified as a Gentoo penguin.</p>
-<div id="cell-37" class="cell" data-execution_count="57">
+<div id="cell-38" class="cell" data-execution_count="57">
 <div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>y_train_pred  <span class="op">=</span> best_model.predict(X_train[best_cols])</span>
