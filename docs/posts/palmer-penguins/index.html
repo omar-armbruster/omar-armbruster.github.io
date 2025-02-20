@@ -681,36 +681,36 @@ window.Quarto = {
 </div>
 </div>
 <p>The goal with building a machine learning classifier is to be able to accurately classify data that we don’t have the labels for. While a <span class="math inline">\(99.6\)</span>% accuracy is certaintly exciting, it is not as impressive when we consider that the model has already seen the data that it is making predictions for. To test how applicable the model will be to new data, we can employ cross-validation, which trains the model and scores its predictions based on different subsets of the training data. When we calculate the mean of each subset’s score, we find that the model has an average score of <span class="math inline">\(98.4\)</span>%, meaning that the model will likely perform well on new data and is not subject to overfitting! We can also use this cross-validation score as a comparison to other machine learning models to determine which will be most effective.</p>
-<div id="cell-23" class="cell">
+<div id="cell-23" class="cell" data-execution_count="73">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="op">%%</span>capture</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>cv_scores_LR <span class="op">=</span> cross_val_score(LR, X_train[best_cols], y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div id="cell-24" class="cell" data-execution_count="74">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cv_scores_LR.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="74">
+<pre><code>0.9844645550527904</code></pre>
+</div>
+</div>
 <p>For the sake of fairness, let’s take a look at a second machine learning model to see if we can improve upon the results of our Logistic Regression model. We can fit a Random Forest Classifier model just like we do with Logisitic Regression and we find that it achieves <span class="math inline">\(100\)</span>% accuracy on the training data set!</p>
-<div id="cell-25" class="cell" data-execution_count="69">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestClassifier()</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>RF.fit(X_train[best_cols], y_train)</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>RF.score(X_train[best_cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-26" class="cell" data-execution_count="69">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>RF <span class="op">=</span> RandomForestClassifier()</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>RF.fit(X_train[best_cols], y_train)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>RF.score(X_train[best_cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="69">
 <pre><code>1.0</code></pre>
 </div>
 </div>
-<div id="cell-26" class="cell" data-execution_count="70">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cv_scores_RF <span class="op">=</span> cross_val_score(RF, X_train[best_cols], y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>cv_scores_RF.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="cell-27" class="cell" data-execution_count="70">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cv_scores_RF <span class="op">=</span> cross_val_score(RF, X_train[best_cols], y_train, cv <span class="op">=</span> <span class="dv">5</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>cv_scores_RF.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="70">
 <pre><code>0.9765460030165913</code></pre>
 </div>
 </div>
-<div id="cell-27" class="cell" data-execution_count="71">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cv_scores_LR.mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="71">
-<pre><code>0.9844645550527904</code></pre>
-</div>
-</div>
 <p>Now comes the moment of truth: seeing how well our models work on a new set of data. We import and prepare the data the same way we did with our training data, which we then pass into each model’s scoring method. We need to be careful not to refit the models on this data, as the whole idea is to test how well our previous fitting works on new data. As we see below, the Logistic Regression and Random Forest Classifier models score <span class="math inline">\(100\)</span>% and <span class="math inline">\(98.5\)</span>% accuracy, respectively. Success!</p>
-<div id="cell-29" class="cell" data-execution_count="72">
+<div id="cell-29" class="cell" data-execution_count="75">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>test_url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/palmer-penguins/test.csv"</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>test <span class="op">=</span> pd.read_csv(test_url)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>test[<span class="st">"Species"</span>] <span class="op">=</span> test[<span class="st">"Species"</span>].<span class="bu">str</span>.split().<span class="bu">str</span>.get(<span class="dv">0</span>)</span>
