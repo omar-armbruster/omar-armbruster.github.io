@@ -3,3 +3,5 @@
 *.code-workspace
 /.quarto/
 *.ipynb_checkpoints
+
+/.csv/

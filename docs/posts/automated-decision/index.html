@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Omar Armbruster">
-<meta name="dcterms.date" content="2025-02-26">
+<meta name="dcterms.date" content="2025-03-05">
 <meta name="description" content="Borrowers v. Bankers: A case study in maximizing shareholder value">
 
 <title>Design and Impact of Automated Decisions – Omar Armbruster</title>
@@ -222,7 +222,7 @@ window.Quarto = {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">February 26, 2025</p>
+        <p class="date">March 5, 2025</p>
       </div>
     </div>
     
@@ -641,158 +641,48 @@ window.Quarto = {
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
 <span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols1], y_train)</span>
 <span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>cross_val_score(LR, X_train[cols1], y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(</code></pre>
-</div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>0.8439336903961869</code></pre>
 </div>
 </div>
 <p>Our second combination ignores all categorical variables and just focuses on the interest rate and the loan’s percentage of the borrower’s income, which could be effective based on the trend we saw in the scatterplot above. We find a cross-validation score of <span class="math inline">\(82.6\%\)</span>. While not as high as the previous combination, the cross-validation score is quite high, indicating a strong predictive power between these two features.</p>
 <div id="cell-18" class="cell" data-execution_count="26">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>qual_cols <span class="op">=</span> []</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>quant_cols <span class="op">=</span> [<span class="st">'loan_int_rate'</span>, <span class="st">'loan_percent_income'</span>]</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>cols2 <span class="op">=</span> getCols(X_train, quant_cols, qual_cols)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols2], y_train)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>cross_val_score(LR, X_train[cols2], y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>qual_cols <span class="op">=</span> []</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>quant_cols <span class="op">=</span> [<span class="st">'loan_int_rate'</span>, <span class="st">'loan_percent_income'</span>]</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>cols2 <span class="op">=</span> getCols(X_train, quant_cols, qual_cols)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols2], y_train)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>cross_val_score(LR, X_train[cols2], y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="26">
 <pre><code>0.825773775136919</code></pre>
 </div>
 </div>
 <p>Our last combination uses the same features as the first combination but ignores the loan interest rate and the loan’s percentage of the borrower’s income. Using cross-validation, we get a score of <span class="math inline">\(78.5\%\)</span>.</p>
 <div id="cell-20" class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>qual_cols <span class="op">=</span> [<span class="st">'person_home_ownership'</span>, <span class="st">'loan_intent'</span>]</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>quant_cols <span class="op">=</span> [<span class="st">'person_age'</span>, <span class="st">'person_emp_length'</span>]</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>cols3 <span class="op">=</span> getCols(X_train, quant_cols, qual_cols)</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
-<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols3], y_train)</span>
-<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cross_val_score(LR, X_train[cols3], y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(
-c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>qual_cols <span class="op">=</span> [<span class="st">'person_home_ownership'</span>, <span class="st">'loan_intent'</span>]</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>quant_cols <span class="op">=</span> [<span class="st">'person_age'</span>, <span class="st">'person_emp_length'</span>]</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>cols3 <span class="op">=</span> getCols(X_train, quant_cols, qual_cols)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols3], y_train)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>cross_val_score(LR, X_train[cols3], y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="27">
 <pre><code>0.7849565667540506</code></pre>
 </div>
 </div>
 <p>While accuracy is not the only consideration to be made when profitmaxxing (as we will get to in a moment), a higher accuracy and cross-validation score indicate a strength in our model that we will want when trying to minimize certain types of error. As such, we can select the first combination of features we tested, which include the loan intent, borrower’s homeowner status, the interest rate, the loan’s percentage of the borrower’s income, the borrower’s age, and the borrower’s employment history.</p>
 <div id="cell-22" class="cell" data-execution_count="28">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> cols1</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols], y_train)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>LR.score(X_train[cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>c:\Users\omara\.conda\envs\ml451\lib\site-packages\sklearn\linear_model\_logistic.py:460: ConvergenceWarning: lbfgs failed to converge (status=1):
-STOP: TOTAL NO. of ITERATIONS REACHED LIMIT.
-
-Increase the number of iterations (max_iter) or scale the data as shown in:
-    https://scikit-learn.org/stable/modules/preprocessing.html
-Please also refer to the documentation for alternative solver options:
-    https://scikit-learn.org/stable/modules/linear_model.html#logistic-regression
-  n_iter_i = _check_optimize_result(</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> cols1</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>LR <span class="op">=</span> LogisticRegression()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>LR.fit(X_train[cols], y_train)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>LR.score(X_train[cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="28">
 <pre><code>0.8458986336054481</code></pre>
 </div>
 </div>
 <p>With our trained model, we can extract the component of greatest interest (bank pun?): the weights, which indicate how much each feature should be considered. Using the weights, we can convert any set of borrower data into a set of probabilities representing the predicted probability that a given borrower will default on their loans.</p>
 <div id="cell-24" class="cell" data-execution_count="29">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> LR.coef_[<span class="dv">0</span>]</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>weights</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>weights <span class="op">=</span> LR.coef_[<span class="dv">0</span>]</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>weights</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="29">
 <pre><code>array([18.18778916,  9.26840527, -0.03010567, -0.0267996 , -0.66674985,
        -0.4983932 , -1.81653014,  0.08564683, -0.04352733, -1.01633329,
@@ -804,18 +694,18 @@ Please also refer to the documentation for alternative solver options:
 <h1>Optimizing a Threshold</h1>
 <p>Using our calculate_norm_scores() function, we can calcuate the predicted probability <span class="math inline">\(s\)</span> that each borrower in our dataset will default on their loans. This works by finding the dot product between the feature data and their corresponding weights and then using min-max scaling to set the dot products on a scale from <span class="math inline">\(0\)</span> to <span class="math inline">\(1\)</span>. We can interpret these values as probabilities where a <span class="math inline">\(1\)</span> represents a <span class="math inline">\(100\%\)</span> chance of defaulting and a <span class="math inline">\(0\)</span> represents a <span class="math inline">\(0\%\)</span> chance of defaulting.</p>
 <div id="cell-27" class="cell" data-execution_count="30">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_norm_scores(X, weights):</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    unNorm <span class="op">=</span> X<span class="op">@</span>weights</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (unNorm <span class="op">-</span> unNorm.<span class="bu">min</span>())<span class="op">/</span>(unNorm.<span class="bu">max</span>() <span class="op">-</span> unNorm.<span class="bu">min</span>())</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> calculate_norm_scores(X_train[cols], weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calculate_norm_scores(X, weights):</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    unNorm <span class="op">=</span> X<span class="op">@</span>weights</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (unNorm <span class="op">-</span> unNorm.<span class="bu">min</span>())<span class="op">/</span>(unNorm.<span class="bu">max</span>() <span class="op">-</span> unNorm.<span class="bu">min</span>())</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> calculate_norm_scores(X_train[cols], weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We can plot the probabilities on a histogram to observe the distribution of the borrowers. The data resemble a gaussian where the average borrower appears to have around a <span class="math inline">\(40\%\)</span> chance of default.</p>
 <div id="cell-fig-score-histogram" class="cell" data-execution_count="31">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">4</span>))</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> ax.hist(s, bins <span class="op">=</span> <span class="dv">50</span>, color <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, linewidth <span class="op">=</span> <span class="dv">1</span>, edgecolor <span class="op">=</span> <span class="st">"black"</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="vs">r"Score $s$"</span>, ylabel <span class="op">=</span> <span class="st">"Frequency"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>hist <span class="op">=</span> ax.hist(s, bins <span class="op">=</span> <span class="dv">50</span>, color <span class="op">=</span> <span class="st">"steelblue"</span>, alpha <span class="op">=</span> <span class="fl">0.6</span>, linewidth <span class="op">=</span> <span class="dv">1</span>, edgecolor <span class="op">=</span> <span class="st">"black"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="vs">r"Score $s$"</span>, ylabel <span class="op">=</span> <span class="st">"Frequency"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-display">
 <div id="fig-score-histogram" class="quarto-float quarto-figure quarto-figure-center anchored">
@@ -832,24 +722,24 @@ Figure&nbsp;1: Histogram of scores. Code sourced from Phil Chodrow Lecture Notes
 </div>
 <p>Now to choose our threshold. To find the optimal risk cutoff, we can employ the very elegant and efficient brute force approach. We can test <span class="math inline">\(100\)</span> values of our threshold <span class="math inline">\(t\)</span> between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, calculating whether each borrower falls above or below the threshold. Borrowers who fall above the threshold are considered to be too high of a risk to give a loan to, while borrowers below the threshold will be approved to receive a loan. We can then compare these labels to the real labels from the “loan_status” column. Based on this, we can calculate the total profit of the bank. If the model predicts that a borrower will pay back their loan and the borrower actually does, the bank will make a profit of <span class="math display">\[loan\_amnt*(1+0.25*int\_rate)^{10} - loan\_amnt\]</span> which assumes that the bank profits <span class="math inline">\(25\%\)</span> of the interest rate after paying operating expenses and that the loan is paid back in ten years. If the model predicts that the borrower will pay back their loans and they actually default, the bank’s profit can be calculated by <span class="math display">\[loan\_amnt*(1 + 0.25*int\_rate)^3 - 1.7*loan\_amnt\]</span> which assumes that the borrower defaults after three years causing the bank to lose <span class="math inline">\(70\%\)</span> of the principal. This amount is typically a negative value. In the banking industry this is considered to be “bad for business”. We can sum the values of these two profits to determine the total profit of the bank. We can calculate the profit yielded by each threshold and then set our best threshold to be whichever yields the highest profit. In our figure below, it appears optimal to reject any borrowers with a risk of default higher than <span class="math inline">\(58\%\)</span>, which yields a profit of <span class="math inline">\(\$1452.12\)</span> per prospective borrower. Not too bad!</p>
 <div id="cell-31" class="cell" data-execution_count="32">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure code sourced from Phil Chodrow Lecture Notes and modified for the algorithm used in this post.</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>best_benefit <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>best_threshold <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">4</span>))</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">101</span>): </span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>    y_pred <span class="op">=</span> s <span class="op">&gt;=</span> t</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>    tn <span class="op">=</span> np.<span class="bu">sum</span>((X_train[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_train[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">10</span> <span class="op">-</span> X_train[<span class="st">'loan_amnt'</span>])[(y_train <span class="op">==</span> <span class="dv">0</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>    fn <span class="op">=</span> np.<span class="bu">sum</span>((X_train[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_train[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">3</span> <span class="op">-</span> <span class="fl">1.7</span><span class="op">*</span>X_train[<span class="st">'loan_amnt'</span>])[(y_train <span class="op">==</span> <span class="dv">1</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>    benefit <span class="op">=</span> (tn <span class="op">+</span> fn)<span class="op">/</span><span class="bu">len</span>(X_train)</span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>    ax.scatter(t, benefit, color <span class="op">=</span> <span class="st">"steelblue"</span>, s <span class="op">=</span> <span class="dv">10</span>)</span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> benefit <span class="op">&gt;</span> best_benefit: </span>
-<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>        best_benefit <span class="op">=</span> benefit</span>
-<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>        best_threshold <span class="op">=</span> t</span>
-<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>ax.axvline(best_threshold, linestyle <span class="op">=</span> <span class="st">"--"</span>, color <span class="op">=</span> <span class="st">"grey"</span>, zorder <span class="op">=</span> <span class="op">-</span><span class="dv">10</span>)</span>
-<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="vs">r"Threshold $t$"</span>, ylabel <span class="op">=</span> <span class="st">"Benefit per Prospective Borrower"</span>, title <span class="op">=</span> <span class="ss">f"Best Benefit of $</span><span class="sc">{</span>best_benefit<span class="sc">:.2f}</span><span class="ss"> Per Prospective Borrower at Threshold t = </span><span class="sc">{</span>best_threshold<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Figure code sourced from Phil Chodrow Lecture Notes and modified for the algorithm used in this post.</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>best_benefit <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>best_threshold <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">101</span>): </span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    y_pred <span class="op">=</span> s <span class="op">&gt;=</span> t</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    tn <span class="op">=</span> np.<span class="bu">sum</span>((X_train[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_train[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">10</span> <span class="op">-</span> X_train[<span class="st">'loan_amnt'</span>])[(y_train <span class="op">==</span> <span class="dv">0</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    fn <span class="op">=</span> np.<span class="bu">sum</span>((X_train[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_train[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">3</span> <span class="op">-</span> <span class="fl">1.7</span><span class="op">*</span>X_train[<span class="st">'loan_amnt'</span>])[(y_train <span class="op">==</span> <span class="dv">1</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    benefit <span class="op">=</span> (tn <span class="op">+</span> fn)<span class="op">/</span><span class="bu">len</span>(X_train)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    ax.scatter(t, benefit, color <span class="op">=</span> <span class="st">"steelblue"</span>, s <span class="op">=</span> <span class="dv">10</span>)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> benefit <span class="op">&gt;</span> best_benefit: </span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        best_benefit <span class="op">=</span> benefit</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>        best_threshold <span class="op">=</span> t</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>ax.axvline(best_threshold, linestyle <span class="op">=</span> <span class="st">"--"</span>, color <span class="op">=</span> <span class="st">"grey"</span>, zorder <span class="op">=</span> <span class="op">-</span><span class="dv">10</span>)</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>labs <span class="op">=</span> ax.<span class="bu">set</span>(xlabel <span class="op">=</span> <span class="vs">r"Threshold $t$"</span>, ylabel <span class="op">=</span> <span class="st">"Benefit per Prospective Borrower"</span>, title <span class="op">=</span> <span class="ss">f"Best Benefit of $</span><span class="sc">{</span>best_benefit<span class="sc">:.2f}</span><span class="ss"> Per Prospective Borrower at Threshold t = </span><span class="sc">{</span>best_threshold<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -863,22 +753,22 @@ Figure&nbsp;1: Histogram of scores. Code sourced from Phil Chodrow Lecture Notes
 <h1>Evaluating The Model as a Banker</h1>
 <p>So how does our model perform on a testing dataset where the model weights have not been influenced by the data it is transforming? Let’s find out!</p>
 <div id="cell-34" class="cell" data-execution_count="33">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/credit-risk/test.csv"</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df_test <span class="op">=</span> pd.read_csv(url)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"loan_int_rate"</span>] <span class="op">=</span> df_test[<span class="st">"loan_int_rate"</span>]<span class="op">/</span><span class="dv">100</span></span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> preprocess_data(df_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://raw.githubusercontent.com/PhilChodrow/ml-notes/main/data/credit-risk/test.csv"</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>df_test <span class="op">=</span> pd.read_csv(url)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"loan_int_rate"</span>] <span class="op">=</span> df_test[<span class="st">"loan_int_rate"</span>]<span class="op">/</span><span class="dv">100</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> preprocess_data(df_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using the same features we used before and the weights from our trained Logistic Regression model, we can transform the testing data into a set of probabilities as well.</p>
 <div id="cell-36" class="cell" data-execution_count="34">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> calculate_norm_scores(X_test[cols], weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>s <span class="op">=</span> calculate_norm_scores(X_test[cols], weights)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Using the best threshold we found to be optimal from the training data, we can assign labels to each of our testing borrowers and calculate the bank’s total profit based on these predictions. We find that the bank profits <span class="math inline">\(\$1366.84\)</span> per prospective borrower, which is very similar to the profits we found with the training data. Success!</p>
 <div id="cell-38" class="cell" data-execution_count="35">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> s <span class="op">&gt;=</span> best_threshold</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>tn <span class="op">=</span> np.<span class="bu">sum</span>((X_test[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_test[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">10</span> <span class="op">-</span> X_test[<span class="st">'loan_amnt'</span>])[(y_test <span class="op">==</span> <span class="dv">0</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>fn <span class="op">=</span> np.<span class="bu">sum</span>((X_test[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_test[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">3</span> <span class="op">-</span> <span class="fl">1.7</span><span class="op">*</span>X_test[<span class="st">'loan_amnt'</span>])[(y_test <span class="op">==</span> <span class="dv">1</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>benefit <span class="op">=</span> (tn <span class="op">+</span> fn)<span class="op">/</span><span class="bu">len</span>(X_test)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>benefit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> s <span class="op">&gt;=</span> best_threshold</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tn <span class="op">=</span> np.<span class="bu">sum</span>((X_test[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_test[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">10</span> <span class="op">-</span> X_test[<span class="st">'loan_amnt'</span>])[(y_test <span class="op">==</span> <span class="dv">0</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>fn <span class="op">=</span> np.<span class="bu">sum</span>((X_test[<span class="st">'loan_amnt'</span>]<span class="op">*</span>(<span class="dv">1</span> <span class="op">+</span> <span class="fl">0.25</span><span class="op">*</span>X_test[<span class="st">'loan_int_rate'</span>])<span class="op">**</span><span class="dv">3</span> <span class="op">-</span> <span class="fl">1.7</span><span class="op">*</span>X_test[<span class="st">'loan_amnt'</span>])[(y_test <span class="op">==</span> <span class="dv">1</span>)<span class="op">&amp;</span>(y_pred <span class="op">==</span> <span class="dv">0</span>)])</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>benefit <span class="op">=</span> (tn <span class="op">+</span> fn)<span class="op">/</span><span class="bu">len</span>(X_test)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>benefit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="35">
 <pre><code>1366.8358295680039</code></pre>
 </div>
@@ -889,8 +779,8 @@ Figure&nbsp;1: Histogram of scores. Code sourced from Phil Chodrow Lecture Notes
 <p>While optimizing profits can certaintly be exhilerating, it does not come without its costs. Because the model cannot predict with complete certainty whether a borrower will default, there are bound to be borrowers who are denied loans even if they actually would have been able to pay back their loans. In the name of fairness, we can examine who was approved and denied loans and determine if certain groups of people are advantaged or disadvantaged by our model.</p>
 <p>We first look at the average prediction based on the borrowers age. Our model predicts that borrowers from ages <span class="math inline">\(20\)</span> to <span class="math inline">\(30\)</span> will have the highest rate of default at <span class="math inline">\(14.4\%\)</span>. While this does disadvantage young people, the model still predicts the rate of default to be much lower than the actual rate, meaning many young people that are approved a loan will still default. The greatest disparity in predictions is in the <span class="math inline">\(50\)</span> to <span class="math inline">\(60\)</span> year old age group, where only <span class="math inline">\(2.9\%\)</span> are predicted to default when this group actually has the highest rate at <span class="math inline">\(28.9\%\)</span>.</p>
 <div id="cell-41" class="cell" data-execution_count="36">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"y_pred"</span>] <span class="op">=</span> y_pred</span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>df_test.groupby(pd.cut(df_test[<span class="st">"person_age"</span>], [<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">80</span>]))[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"y_pred"</span>] <span class="op">=</span> y_pred</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>df_test.groupby(pd.cut(df_test[<span class="st">"person_age"</span>], [<span class="dv">20</span>,<span class="dv">30</span>,<span class="dv">40</span>,<span class="dv">50</span>,<span class="dv">60</span>,<span class="dv">80</span>]))[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="36">
 <div>
 
@@ -943,7 +833,7 @@ Figure&nbsp;1: Histogram of scores. Code sourced from Phil Chodrow Lecture Notes
 </div>
 <p>Next we can look at the predictions for default based on loan intent. Just as with the age groups, the predicted rates of default are much lower than the actual rates of default, although by varying amounts. Among the highest predicted rates of default are medical expenses with a predicted rate of <span class="math inline">\(19.6\%\)</span> compared to the actual default rate of <span class="math inline">\(28.2\%\)</span>. This means it is significantly harder to get approved for a medical loan than other loans like education or venture loans, which are given predicted default rates of <span class="math inline">\(6.3\%\)</span> and <span class="math inline">\(8.4\%\)</span> respectively.</p>
 <div id="cell-43" class="cell" data-execution_count="37">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df_test.groupby(<span class="st">"loan_intent"</span>)[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df_test.groupby(<span class="st">"loan_intent"</span>)[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="37">
 <div>
 
@@ -1002,8 +892,8 @@ Figure&nbsp;1: Histogram of scores. Code sourced from Phil Chodrow Lecture Notes
 </div>
 <p>Lastly, we can look at income brackets. Borrowers that make less than <span class="math inline">\(\$40000\)</span> are the most likely to default, which the model reflects by making it the most difficult for these borrowers to access credit. As the income brackets increase, the model predicts lower and lower rates of default even though the actual rates of default seem to level off above <span class="math inline">\(\$70000\)</span>.</p>
 <div id="cell-45" class="cell" data-execution_count="38">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"y_pred"</span>] <span class="op">=</span> y_pred</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>df_test.groupby(pd.cut(df_test[<span class="st">"person_income"</span>], [<span class="dv">0</span>,<span class="dv">40000</span>,<span class="dv">70000</span>,<span class="dv">100000</span>, <span class="dv">150000</span>,<span class="dv">1000000</span>]))[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_test[<span class="st">"y_pred"</span>] <span class="op">=</span> y_pred</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df_test.groupby(pd.cut(df_test[<span class="st">"person_income"</span>], [<span class="dv">0</span>,<span class="dv">40000</span>,<span class="dv">70000</span>,<span class="dv">100000</span>, <span class="dv">150000</span>,<span class="dv">1000000</span>]))[[<span class="st">"y_pred"</span>, <span class="st">"loan_status"</span>]].mean().reset_index()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="38">
 <div>
 

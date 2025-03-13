@@ -786,40 +786,32 @@ window.Quarto = {
 <p>Below are the decision regions for the training dataset, divided by “Sex”, our selected qualitative variable. As we can see, the Logistic Regression model divides the coordinate space into three regions, each which correspond to a penguin species. When provided with new data, the model identifies where in the coordinate space that the new data point falls, and assigns a label based on whichever region it falls in. It appears that there are a few points that cross over to a different species’ region, which would account for the less than perfect accuracy we observed earlier. While our first instinct may be to try and fix the model so that it achieves perfect accuracy, this is not necessarily the goal, as redrawing our lines to accomodate for outliers will likely cause overfitting that will not translate well to new data. As such, these regions indicate a very strong classifier!</p>
 <div id="cell-34" class="cell" data-execution_count="55">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>plot_regions(best_model, X_train[best_cols], y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\omara\AppData\Local\Temp\ipykernel_24932\697242165.py:53: UserWarning: The figure layout has changed to tight
-  plt.tight_layout()</code></pre>
-</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-18-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-18-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Below shows the same decision regions applied to the testing data, and as we would expect, the new data aligns very well with our trained regions. Success Again!</p>
 <div id="cell-36" class="cell" data-execution_count="56">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>plot_regions(best_model, X_test[best_cols], y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>C:\Users\omara\AppData\Local\Temp\ipykernel_24932\697242165.py:53: UserWarning: The figure layout has changed to tight
-  plt.tight_layout()</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>plot_regions(best_model, X_test[best_cols], y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-19-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-19-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>As a final check, it helps to generate a confusion matrix, which compares the real labels to the predicted labels to show where the classifier is making mistakes. For example, we may notice that the model tends to sometimes classify Adelie penguins as Gentoo penguins but never Gentoo penguins as Adelie penguins. This would perhaps help us identify similar features between the two or would maybe indicate that our model needs more training to be able to distinguish between the two. In our case, our model is fairly accurate, so it is a little tricky to make any strong conclusions about the errors in the model. Based on the confusion matrix for the training data below, it appears that one of the Chinstrap penguins was classified as a Gentoo penguin.</p>
 <div id="cell-38" class="cell" data-execution_count="57">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>y_train_pred  <span class="op">=</span> best_model.predict(X_train[best_cols])</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> confusion_matrix(y_train, y_train_pred)</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>C</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> confusion_matrix</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>y_train_pred  <span class="op">=</span> best_model.predict(X_train[best_cols])</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>C <span class="op">=</span> confusion_matrix(y_train, y_train_pred)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>C</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="57">
 <pre><code>array([[108,   0,   0],
        [  1,  55,   0],

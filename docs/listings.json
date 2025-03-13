@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/auditing-bias/index.html",
       "/posts/automated-decision/index.html",
       "/posts/palmer-penguins/index.html"
     ]
