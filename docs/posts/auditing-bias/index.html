@@ -258,6 +258,9 @@ window.Quarto = {
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>acs_data <span class="op">=</span> data_source.get_data(states<span class="op">=</span>[STATE], download<span class="op">=</span><span class="va">True</span>)</span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>acs_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Downloading data for 2018 1-Year person survey for NY...</code></pre>
+</div>
 <div class="cell-output cell-output-display" data-execution_count="2">
 <div>
 
@@ -438,8 +441,8 @@ window.Quarto = {
 <li>ESR - Employment status</li>
 </ul>
 <div id="cell-5" class="cell" data-execution_count="3">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>possible_features<span class="op">=</span>[<span class="st">'AGEP'</span>, <span class="st">'SCHL'</span>, <span class="st">'MAR'</span>, <span class="st">'RELP'</span>, <span class="st">'DIS'</span>, <span class="st">'ESP'</span>, <span class="st">'CIT'</span>, <span class="st">'MIG'</span>, <span class="st">'MIL'</span>, <span class="st">'ANC'</span>, <span class="st">'NATIVITY'</span>, <span class="st">'DEAR'</span>, <span class="st">'DEYE'</span>, <span class="st">'DREM'</span>, <span class="st">'SEX'</span>, <span class="st">'RAC1P'</span>, <span class="st">'ESR'</span>]</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>acs_data[possible_features].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>possible_features<span class="op">=</span>[<span class="st">'AGEP'</span>, <span class="st">'SCHL'</span>, <span class="st">'MAR'</span>, <span class="st">'RELP'</span>, <span class="st">'DIS'</span>, <span class="st">'ESP'</span>, <span class="st">'CIT'</span>, <span class="st">'MIG'</span>, <span class="st">'MIL'</span>, <span class="st">'ANC'</span>, <span class="st">'NATIVITY'</span>, <span class="st">'DEAR'</span>, <span class="st">'DEYE'</span>, <span class="st">'DREM'</span>, <span class="st">'SEX'</span>, <span class="st">'RAC1P'</span>, <span class="st">'ESR'</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>acs_data[possible_features].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="3">
 <div>
 
@@ -577,20 +580,20 @@ window.Quarto = {
 <p>We use the selected features to define our training dataset but exclude employment status (the target variable) and race, which we claim the model will be able to implicitly determine. We define a problem, which specifies our target and hidden features (employment and race).</p>
 <p>Looking briefly at our data, it appears we have <span class="math inline">\(196,967\)</span> observations (people) measured with <span class="math inline">\(15\)</span> features. We confirm that our created feature, label, and group objects all have the same length, as each entry should correspond to a single person.</p>
 <div id="cell-7" class="cell" data-execution_count="4">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>features_to_use <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> possible_features <span class="cf">if</span> f <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"ESR"</span>, <span class="st">"RAC1P"</span>]]</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>EmploymentProblem <span class="op">=</span> BasicProblem(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    features<span class="op">=</span>features_to_use,</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ESR'</span>,</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    target_transform<span class="op">=</span><span class="kw">lambda</span> x: x <span class="op">==</span> <span class="dv">1</span>,</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    group<span class="op">=</span><span class="st">'RAC1P'</span>,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    preprocess<span class="op">=</span><span class="kw">lambda</span> x: x,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    postprocess<span class="op">=</span><span class="kw">lambda</span> x: np.nan_to_num(x, <span class="op">-</span><span class="dv">1</span>),</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>features, label, group <span class="op">=</span> EmploymentProblem.df_to_numpy(acs_data)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> obj <span class="kw">in</span> [features, label, group]:</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(obj.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>features_to_use <span class="op">=</span> [f <span class="cf">for</span> f <span class="kw">in</span> possible_features <span class="cf">if</span> f <span class="kw">not</span> <span class="kw">in</span> [<span class="st">"ESR"</span>, <span class="st">"RAC1P"</span>]]</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>EmploymentProblem <span class="op">=</span> BasicProblem(</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    features<span class="op">=</span>features_to_use,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    target<span class="op">=</span><span class="st">'ESR'</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    target_transform<span class="op">=</span><span class="kw">lambda</span> x: x <span class="op">==</span> <span class="dv">1</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    group<span class="op">=</span><span class="st">'RAC1P'</span>,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    preprocess<span class="op">=</span><span class="kw">lambda</span> x: x,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    postprocess<span class="op">=</span><span class="kw">lambda</span> x: np.nan_to_num(x, <span class="op">-</span><span class="dv">1</span>),</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>features, label, group <span class="op">=</span> EmploymentProblem.df_to_numpy(acs_data)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> obj <span class="kw">in</span> [features, label, group]:</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="bu">print</span>(obj.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>(196967, 15)
 (196967,)
@@ -599,34 +602,34 @@ window.Quarto = {
 </div>
 <p>As is good machine learning practice, we define a testing and training dataset so we can later evaluate how our model performs on unseen data.</p>
 <div id="cell-9" class="cell" data-execution_count="5">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test, group_train, group_test <span class="op">=</span> train_test_split(</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    features, label, group, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test, group_train, group_test <span class="op">=</span> train_test_split(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    features, label, group, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>For later analysis, we create a function that modifies our training and testing datasets, which only include the training features. We add both the group (race) and label (employment status) columns to the new dataset as well as modify encoded labels to labels that we can understand. For the sake of analyzing sufficiently large racial groups, we sort groups into White, African American, Asian, and Other.</p>
 <div id="cell-11" class="cell" data-execution_count="6">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> format_data(df, features_to_use, group, labels):</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    new_df <span class="op">=</span> pd.DataFrame(df, columns <span class="op">=</span> features_to_use)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'group'</span>] <span class="op">=</span> group</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'employed'</span>] <span class="op">=</span> labels</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'SEX'</span>] <span class="op">=</span> new_df[<span class="st">'SEX'</span>].replace({<span class="fl">1.0</span>: <span class="st">'Male'</span>, <span class="fl">2.0</span>: <span class="st">'Female'</span>})</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'group'</span>] <span class="op">=</span> new_df[<span class="st">'group'</span>].replace({<span class="fl">1.0</span>: <span class="st">'White'</span>, </span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">2.0</span>: <span class="st">'African American'</span>,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">3.0</span>: <span class="st">'Other Race'</span>,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">4.0</span>: <span class="st">'Other Race'</span>,</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">5.0</span>: <span class="st">'Other Race'</span>,</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">6.0</span>: <span class="st">'Asian'</span>,</span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">7.0</span>: <span class="st">'Other Race'</span>,</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">8.0</span>: <span class="st">'Other Race'</span>,</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">9.0</span>: <span class="st">'Other Race'</span>})</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> new_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> format_data(df, features_to_use, group, labels):</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    new_df <span class="op">=</span> pd.DataFrame(df, columns <span class="op">=</span> features_to_use)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'group'</span>] <span class="op">=</span> group</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'employed'</span>] <span class="op">=</span> labels</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'SEX'</span>] <span class="op">=</span> new_df[<span class="st">'SEX'</span>].replace({<span class="fl">1.0</span>: <span class="st">'Male'</span>, <span class="fl">2.0</span>: <span class="st">'Female'</span>})</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    new_df[<span class="st">'group'</span>] <span class="op">=</span> new_df[<span class="st">'group'</span>].replace({<span class="fl">1.0</span>: <span class="st">'White'</span>, </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">2.0</span>: <span class="st">'African American'</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">3.0</span>: <span class="st">'Other Race'</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">4.0</span>: <span class="st">'Other Race'</span>,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">5.0</span>: <span class="st">'Other Race'</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">6.0</span>: <span class="st">'Asian'</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">7.0</span>: <span class="st">'Other Race'</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">8.0</span>: <span class="st">'Other Race'</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>                                               <span class="fl">9.0</span>: <span class="st">'Other Race'</span>})</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> new_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>A quick examination of the training data shows that each of our racial groups are in the same order of magnitude with the exception of the White group, which has significantly more people in it.</p>
 <div id="cell-13" class="cell" data-execution_count="7">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_train <span class="op">=</span> format_data(X_train, features_to_use, group_train, y_train)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df_train.groupby(<span class="st">'group'</span>).size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df_train <span class="op">=</span> format_data(X_train, features_to_use, group_train, y_train)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>df_train.groupby(<span class="st">'group'</span>).size()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="7">
 <pre><code>group
 African American     19200
@@ -638,22 +641,22 @@ dtype: int64</code></pre>
 </div>
 <p>Using this dataframe, we can determine the population of the training dataset, which we find to be <span class="math inline">\(157573\)</span> people.</p>
 <div id="cell-15" class="cell" data-execution_count="8">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> df_train.shape[<span class="dv">0</span>]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>population</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> df_train.shape[<span class="dv">0</span>]</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>population</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <pre><code>157573</code></pre>
 </div>
 </div>
 <p>Of these individuals, roughly <span class="math inline">\(46.5\%\)</span> people are employed. This rate is likely so low because we included children in our data, the majority of whom are unemployed.</p>
 <div id="cell-17" class="cell" data-execution_count="9">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>df_train[<span class="st">'employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>df_train[<span class="st">'employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="9">
 <pre><code>0.4649400595279648</code></pre>
 </div>
 </div>
 <p>We can also analyze the proportion of each race in our population. As we saw in the population counts above, African Americans, Asians, and Other Racial groups each make up a similar amount of the population with <span class="math inline">\(11.0\%\)</span>, <span class="math inline">\(9.3\%\)</span>, and <span class="math inline">\(7.9\%\)</span> respectively, while White people make up the remaining <span class="math inline">\(71.8\%\)</span> of the population.</p>
 <div id="cell-19" class="cell" data-execution_count="10">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].groupby(<span class="st">'group'</span>).size()<span class="op">/</span>df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].groupby(<span class="st">'group'</span>).size()<span class="op">/</span>df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].shape[<span class="dv">0</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="10">
 <pre><code>group
 African American    0.109607
@@ -665,7 +668,7 @@ dtype: float64</code></pre>
 </div>
 <p>Despite variances in the size of each racial group, we observe roughly equal employment rates across groups such that <span class="math inline">\(41.8\%\)</span> of African Americans are employed, <span class="math inline">\(49.7\%\)</span> of Asians are employed, <span class="math inline">\(47.5\%\)</span> of Whites are employed, and <span class="math inline">\(41.8\%\)</span> of individuals in other racial groups are employed. These values will be important later for when we audit our model to determine how consistent the predicted employment rates are with reality.</p>
 <div id="cell-21" class="cell" data-execution_count="11">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>df_train.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>df_train.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="11">
 <pre><code>group
 African American    0.418229
@@ -675,22 +678,27 @@ White               0.474990
 Name: employed, dtype: float64</code></pre>
 </div>
 </div>
-<p>It is also worth checking for intersectional trends by breaking down the proportion of people employed by sex as well as race. This can help us determine if race is the major factor in disparities between groups or if there are other contributing factors within racials groups. Based on our bar plot below, women and men tend to make up roughly similar proportions of the workforce within their race, indicating that there is not a signficant difference in employment by sex like there is with race (with Whites making up the largest portion of the workforce).</p>
-<div id="cell-23" class="cell" data-execution_count="12">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn.objects <span class="im">as</span> so</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>prop <span class="op">=</span> (df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].groupby([<span class="st">'group'</span>, <span class="st">'SEX'</span>]).size()<span class="op">/</span>df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].shape[<span class="dv">0</span>]).reset_index(name <span class="op">=</span> <span class="st">'Proportion of workforce'</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> sns.barplot(data <span class="op">=</span> prop,</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                 x <span class="op">=</span> <span class="st">'group'</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                 y <span class="op">=</span> <span class="st">'Proportion of workforce'</span>,</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                 hue <span class="op">=</span> <span class="st">'SEX'</span>,</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>                 palette<span class="op">=</span><span class="st">'Set2'</span>)</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>p1.<span class="bu">set</span>(title <span class="op">=</span> <span class="st">'Workforce Composition'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>It is also worth checking for intersectional trends by examining what percentage of people are employed grouped by sex as well as race. This can help us determine if race is the only major factor in disparities between groups or if there are other contributing factors. Based on the bar plot below, it appears that a greater proportion of men than women are employed with the exception of the African American group. This indicates that women within each racial group may receive further bias from the algorithm, as it is possible that it will predict unemployment for women at higher rates. This may be more prevalent than bias by race since sex is actually a feature that we give to the model wheras race is not.</p>
+<div id="cell-23" class="cell" data-execution_count="27">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn.objects <span class="im">as</span> so</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>prop <span class="op">=</span> (df_train[df_train[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>].groupby([<span class="st">'group'</span>, <span class="st">'SEX'</span>]).size()<span class="op">/</span>df_train.groupby([<span class="st">'group'</span>, <span class="st">'SEX'</span>]).size()).reset_index(name <span class="op">=</span> <span class="st">'p'</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>p1 <span class="op">=</span> sns.barplot(data <span class="op">=</span> prop,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                 x <span class="op">=</span> <span class="st">'group'</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                 y <span class="op">=</span> <span class="st">'p'</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                 hue <span class="op">=</span> <span class="st">'SEX'</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                 palette<span class="op">=</span><span class="st">'Set2'</span>)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>p1.<span class="bu">set</span>(title <span class="op">=</span> <span class="st">'Intersection between race and sex'</span>, xlabel <span class="op">=</span> <span class="st">'Race'</span>, ylabel <span class="op">=</span> <span class="st">'Proportion of group employed'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="27">
+<pre><code>[Text(0.5, 1.0, 'Intersection between race and sex'),
+ Text(0.5, 0, 'Race'),
+ Text(0, 0.5, 'Proportion of group employed')]</code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-12-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="index_files/figure-html/cell-12-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -700,28 +708,28 @@ Name: employed, dtype: float64</code></pre>
 <h1>Fitting a Model</h1>
 <p>Now to train our model. We have chosen to use a Decision Tree Classifer Model. We use the Standard Scaler to make sure each of our features are weighted equally when training our model.</p>
 <div id="cell-25" class="cell" data-execution_count="13">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> cross_val_score</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>In order to use Decision Tree Classifier, we need to tune the max_depth parameter. We can do this very elegantly by trying every possible depth from <span class="math inline">\(1\)</span> to <span class="math inline">\(100\)</span> and choosing the model which scores the most accurately on the data. From this approach, we find that the optimal depth is <span class="math inline">\(10\)</span>. Nice!</p>
 <div id="cell-27" class="cell" data-execution_count="14">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>max_depths <span class="op">=</span> np.linspace(<span class="dv">1</span>, <span class="dv">100</span>, <span class="dv">100</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>best_depth <span class="op">=</span> <span class="dv">1</span></span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>best_val <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> DecisionTreeClassifier(max_depth <span class="op">=</span> <span class="dv">1</span>)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> depth <span class="kw">in</span> max_depths:</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    DTC <span class="op">=</span> make_pipeline(StandardScaler(), DecisionTreeClassifier(max_depth <span class="op">=</span> <span class="bu">int</span>(depth)))</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    DTC.fit(X_train, y_train)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    val <span class="op">=</span> cross_val_score(DTC, X_train, y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> val <span class="op">&gt;</span> best_val:</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>        best_val <span class="op">=</span> val</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>        best_depth <span class="op">=</span> depth</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>        best_model <span class="op">=</span> DTC</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best Depth: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(best_depth))</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>max_depths <span class="op">=</span> np.linspace(<span class="dv">1</span>, <span class="dv">100</span>, <span class="dv">100</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>best_depth <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>best_val <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>best_model <span class="op">=</span> DecisionTreeClassifier(max_depth <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> depth <span class="kw">in</span> max_depths:</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    DTC <span class="op">=</span> make_pipeline(StandardScaler(), DecisionTreeClassifier(max_depth <span class="op">=</span> <span class="bu">int</span>(depth)))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>    DTC.fit(X_train, y_train)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>    val <span class="op">=</span> cross_val_score(DTC, X_train, y_train, cv <span class="op">=</span> <span class="dv">5</span>).mean()</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> val <span class="op">&gt;</span> best_val:</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        best_val <span class="op">=</span> val</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>        best_depth <span class="op">=</span> depth</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>        best_model <span class="op">=</span> DTC</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Best Depth: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(best_depth))</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Best Depth: 10.0</code></pre>
 </div>
@@ -731,57 +739,57 @@ Name: employed, dtype: float64</code></pre>
 <h1>Auditing the model</h1>
 <p>Now that we’ve trained our model, we want to audit our model for implicit biases that it may have picked up from the data. We can first examine some overall features of the model and then examine those features by group to see where differences may be occuring. ## Overall Measures We can first format our data as we did with the training set and then calculat ethe prediction accuracy. Our model appears to guess employment status correctly <span class="math inline">\(82.4\%\)</span> of the time.</p>
 <div id="cell-29" class="cell" data-execution_count="15">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> format_data(X_test, features_to_use, group_test, y_test)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'pred_employed'</span>] <span class="op">=</span> best_model.predict(X_test)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'correct_prediction'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> df[<span class="st">'pred_employed'</span>])</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Prediction Accuracy</span></span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'correct_prediction'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> format_data(X_test, features_to_use, group_test, y_test)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'pred_employed'</span>] <span class="op">=</span> best_model.predict(X_test)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'correct_prediction'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> df[<span class="st">'pred_employed'</span>])</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Prediction Accuracy</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'correct_prediction'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="15">
-<pre><code>0.8236533482256181</code></pre>
+<pre><code>0.8237802711072753</code></pre>
 </div>
 </div>
 <p>To break down where the model went wrong, we can exmaine the number of correct positive and negative predictions as well as incorrect positive and negative predictions. It appears that our model tends to incorrectly guess that a given employee is employed rather than unemployed, indicated by the <span class="math inline">\(4474\)</span> false positive (FP) guesses and the <span class="math inline">\(2472\)</span> false negative (FN) guesses.</p>
 <div id="cell-31" class="cell" data-execution_count="16">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'TN'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">0</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'TP'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'FN'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">0</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'FP'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">'TN'</span>, <span class="st">'TP'</span>, <span class="st">'FN'</span>, <span class="st">'FP'</span>]].<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'TN'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'TP'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'FN'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">1</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">0</span>)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>df[<span class="st">'FP'</span>] <span class="op">=</span> (df[<span class="st">'employed'</span>] <span class="op">==</span> <span class="dv">0</span>) <span class="op">&amp;</span> (df[<span class="st">'pred_employed'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>df[[<span class="st">'TN'</span>, <span class="st">'TP'</span>, <span class="st">'FN'</span>, <span class="st">'FP'</span>]].<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
-<pre><code>TN    16712
-TP    15735
-FN     2472
-FP     4475
+<pre><code>TN    16719
+TP    15733
+FN     2474
+FP     4468
 dtype: int64</code></pre>
 </div>
 </div>
 <p>Using these values we can calculate the positive predictive value (PPV), which is defined by <span class="math display">\[PPV = \frac{TP}{TP + FP}\]</span> as well as the false positive rate <span class="math display">\[FPR = \frac{FP}{FP + TN}\]</span> and false negative rate <span class="math display">\[FNR = \frac{FN}{FN + TP}\]</span>. We find these values to be <span class="math inline">\(77.9\%\)</span>, <span class="math inline">\(21.1\%\)</span>, and <span class="math inline">\(13.6\%\)</span> respectively.</p>
 <div id="cell-33" class="cell" data-execution_count="17">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>PPV <span class="op">=</span> df[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">/</span> (df[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'FP'</span>].<span class="bu">sum</span>())</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>FPR <span class="op">=</span> df[<span class="st">'FP'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df[<span class="st">'FP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'TN'</span>].<span class="bu">sum</span>())</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>FNR <span class="op">=</span> df[<span class="st">'FN'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df[<span class="st">'FN'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'TP'</span>].<span class="bu">sum</span>())</span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(PPV, FPR, FNR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>PPV <span class="op">=</span> df[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">/</span> (df[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'FP'</span>].<span class="bu">sum</span>())</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>FPR <span class="op">=</span> df[<span class="st">'FP'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df[<span class="st">'FP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'TN'</span>].<span class="bu">sum</span>())</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>FNR <span class="op">=</span> df[<span class="st">'FN'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df[<span class="st">'FN'</span>].<span class="bu">sum</span>() <span class="op">+</span> df[<span class="st">'TP'</span>].<span class="bu">sum</span>())</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(PPV, FPR, FNR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>0.7785749628896586 0.211214423939208 0.13577195584116</code></pre>
+<pre><code>0.7788228305529429 0.21088403266153774 0.13588180370187292</code></pre>
 </div>
 </div>
 <section id="by-group-measures" class="level2">
 <h2 class="anchored" data-anchor-id="by-group-measures">By-Group Measures</h2>
 <p>We can now look at the same quantities as above but sorted by group. Starting with accuracy, we notice that the model seems to be fairly consistent in its predictions with the exception of Asians who are only predicted correctly <span class="math inline">\(80.0\%\)</span> of the time compares to the other groups who are predicted correctly roughly <span class="math inline">\(82\%\)</span> of the time.</p>
 <div id="cell-35" class="cell" data-execution_count="18">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"group"</span>)[<span class="st">'correct_prediction'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">"group"</span>)[<span class="st">'correct_prediction'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="18">
 <pre><code>group
-African American    0.820274
+African American    0.820896
 Asian               0.795996
 Other Race          0.831117
-White               0.826688
+White               0.826760
 Name: correct_prediction, dtype: float64</code></pre>
 </div>
 </div>
 <p>We calculate the positive and negative counts as by group as well, which we will need for our PPV, FPR, and FNR values.</p>
 <div id="cell-37" class="cell" data-execution_count="19">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'group'</span>)[[<span class="st">'TP'</span>, <span class="st">'TN'</span>, <span class="st">'FP'</span>, <span class="st">'FN'</span>]].<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'group'</span>)[[<span class="st">'TP'</span>, <span class="st">'TN'</span>, <span class="st">'FP'</span>, <span class="st">'FN'</span>]].<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 
@@ -807,8 +815,8 @@ Name: correct_prediction, dtype: float64</code></pre>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">African American</td>
 <td>1800</td>
-<td>2157</td>
-<td>577</td>
+<td>2160</td>
+<td>574</td>
 <td>290</td>
 </tr>
 <tr class="even">
@@ -827,10 +835,10 @@ Name: correct_prediction, dtype: float64</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">White</td>
-<td>11106</td>
-<td>11742</td>
-<td>2959</td>
-<td>1831</td>
+<td>11104</td>
+<td>11746</td>
+<td>2955</td>
+<td>1833</td>
 </tr>
 </tbody>
 </table>
@@ -840,40 +848,40 @@ Name: correct_prediction, dtype: float64</code></pre>
 </div>
 <p>Calculating the PPVs, we find that the values are fairly consistent with the White group having the highest value of <span class="math inline">\(79.0\%\)</span> and the Asian group having the lowest predictive value of <span class="math inline">\(74.1\%\)</span>. This means that <span class="math inline">\(79.0\%\)</span> of the White people that are predicted to be employed are actually employed and <span class="math inline">\(74.1\%\)</span> of the Asian people that are predicted to be employed are actually employed.</p>
 <div id="cell-39" class="cell" data-execution_count="20">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>PPV <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">/</span> (df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>())</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>PPV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>PPV <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">/</span> (df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>())</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>PPV</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="20">
 <pre><code>group
-African American    0.757257
+African American    0.758214
 Asian               0.741329
 Other Race          0.762411
-White               0.789620
+White               0.789814
 dtype: float64</code></pre>
 </div>
 </div>
 <p>Calculating the FPR, we find that Asians are falsly predicted to be employed at a much higher rate than other groups with an FPR of <span class="math inline">\(31.6\%\)</span>. The reamining groups all have FPR values of roughly <span class="math inline">\(20\%\)</span>, indicating that our model may have a bias towards the Asian group.</p>
 <div id="cell-41" class="cell" data-execution_count="21">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>FPR <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TN'</span>].<span class="bu">sum</span>())</span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>FPR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>FPR <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df.groupby(<span class="st">'group'</span>)[<span class="st">'FP'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TN'</span>].<span class="bu">sum</span>())</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>FPR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="21">
 <pre><code>group
-African American    0.211046
+African American    0.209949
 Asian               0.315511
 Other Race          0.196098
-White               0.201279
+White               0.201007
 dtype: float64</code></pre>
 </div>
 </div>
 <p>The FNR rates closely resemble the trends seen in the FPR values, with each group having a value of roughly <span class="math inline">\(13.5\%\)</span> with the exception fo the Asian group, which has an FNR of <span class="math inline">\(9.2\%\)</span>. This reinforces our observation that the model tends to overestimate the employment rate of the Asian group relative to the other groups.</p>
 <div id="cell-43" class="cell" data-execution_count="22">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>FNR <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FN'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df.groupby(<span class="st">'group'</span>)[<span class="st">'FN'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>())</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>FNR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>FNR <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'FN'</span>].<span class="bu">sum</span>()<span class="op">/</span>(df.groupby(<span class="st">'group'</span>)[<span class="st">'FN'</span>].<span class="bu">sum</span>() <span class="op">+</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'TP'</span>].<span class="bu">sum</span>())</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>FNR</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="22">
 <pre><code>group
 African American    0.138756
 Asian               0.092035
 Other Race          0.131313
-White               0.141532
+White               0.141687
 dtype: float64</code></pre>
 </div>
 </div>
@@ -883,10 +891,10 @@ dtype: float64</code></pre>
 <p>In order to check for bias, we can evaluate our model based on three standards: calibration, error rate balance, and statistical parity.</p>
 <p>We can first examine calibration. A model is well calibrated if the prediction rates are consistent with the actual rates across racial groups. If we were to exclude the Asian group, we could say that our model is approximately calibrated. However, the Asian group has a significantly higher prediction rate than actual rate of employment, indicating poor calibration.</p>
 <div id="cell-45" class="cell" data-execution_count="23">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calibration</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>employed <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>predicted_employed <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'pred_employed'</span>].mean()</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>pd.concat((predicted_employed, employed), axis <span class="op">=</span> <span class="dv">1</span>, keys <span class="op">=</span> [<span class="st">'Prediction'</span>, <span class="st">'True Rate'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Calibration</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>employed <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>predicted_employed <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'pred_employed'</span>].mean()</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>pd.concat((predicted_employed, employed), axis <span class="op">=</span> <span class="dv">1</span>, keys <span class="op">=</span> [<span class="st">'Prediction'</span>, <span class="st">'True Rate'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="23">
 <div>
 
@@ -907,7 +915,7 @@ dtype: float64</code></pre>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">African American</td>
-<td>0.492745</td>
+<td>0.492123</td>
 <td>0.433250</td>
 </tr>
 <tr class="even">
@@ -922,7 +930,7 @@ dtype: float64</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">White</td>
-<td>0.508901</td>
+<td>0.508684</td>
 <td>0.468087</td>
 </tr>
 </tbody>
@@ -933,8 +941,8 @@ dtype: float64</code></pre>
 </div>
 <p>Next we examine error rate parity, which evaluates if the FPR and FNR values are consistent with one another across groups. As with the calibration, three of the groups are fairly consistent with their FPR and FNR values, while the Asian group has a substantially higher FPR and a substantially lower FNR, indicating a poor error rate parity as well.</p>
 <div id="cell-47" class="cell" data-execution_count="24">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Error Rate Parity</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>pd.concat((FPR, FNR), axis <span class="op">=</span> <span class="dv">1</span>, keys <span class="op">=</span> [<span class="st">'FPR'</span>, <span class="st">'FNR'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Error Rate Parity</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>pd.concat((FPR, FNR), axis <span class="op">=</span> <span class="dv">1</span>, keys <span class="op">=</span> [<span class="st">'FPR'</span>, <span class="st">'FNR'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 
@@ -955,7 +963,7 @@ dtype: float64</code></pre>
 <tbody>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">African American</td>
-<td>0.211046</td>
+<td>0.209949</td>
 <td>0.138756</td>
 </tr>
 <tr class="even">
@@ -970,8 +978,8 @@ dtype: float64</code></pre>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">White</td>
-<td>0.201279</td>
-<td>0.141532</td>
+<td>0.201007</td>
+<td>0.141687</td>
 </tr>
 </tbody>
 </table>
@@ -981,36 +989,36 @@ dtype: float64</code></pre>
 </div>
 <p>Lastly we can check for statistical parity, which examines if the predicted employment rates between groups are equal to one another. A model that satisfies statistical parity would have an equal proportion of people predicted to be employed across each group. Our model also does not satisfy statistical parity, as the predicted rate of Asian employment is signficantly higher than the rate for the three other racial groups.</p>
 <div id="cell-49" class="cell" data-execution_count="25">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical Parity </span></span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'group'</span>)[<span class="st">'pred_employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical Parity </span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>df.groupby(<span class="st">'group'</span>)[<span class="st">'pred_employed'</span>].mean()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="25">
 <pre><code>group
-African American    0.492745
+African American    0.492123
 Asian               0.611127
 Other Race          0.478642
-White               0.508901
+White               0.508684
 Name: pred_employed, dtype: float64</code></pre>
 </div>
 </div>
-<p>Based on the paper “Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments.” by Alexandra Chouldechova, we can examine how fair our model has the potential to be by finding the optimal combinations of FNR and FPR rates. We can calculate the FPR using the FNR with the equation <span class="math display">\[FPR = \frac{p}{1 - p}\frac{1 - PPV}{PPV}(1 - FNR)\]</span> where <span class="math inline">\(p\)</span> is the prevalence or actual employment rate. As an approximation to calibrate our results, we set the PPV to be the minimum PPV value between groups. In this case, we are only examining the White and Asian groups, so we use the Asian PPV as our value. We can add shading to the White line, which shows acceptable FPR values for the White group if we allow the the PPV of the White group to deviate by <span class="math inline">\(\delta = 0.5\)</span>, <span class="math inline">\(0.1\)</span>, and <span class="math inline">\(0.125\)</span> from the PPV of the African American group. Based on the plot, if we desired to tune our classifier threshold so that the false positive rates were equal between races, we would need to increase the false negative rate of the Asiang group to roughly <span class="math inline">\(0.2\)</span>. This is not a substantial change, indicating that we could achieve a fair outcome without much of a decrease in the accuracy of the model.</p>
-<div id="cell-51" class="cell" data-execution_count="27">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>PPV_min <span class="op">=</span> PPV[[<span class="st">'Asian'</span>, <span class="st">'White'</span>]].<span class="bu">min</span>()</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>FNR_calc <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>FPR_calc <span class="op">=</span> <span class="kw">lambda</span> p,FNR, PPV_min: (p<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>p)) <span class="op">*</span> ((<span class="dv">1</span> <span class="op">-</span> PPV_min)<span class="op">/</span>PPV_min)<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> FNR)</span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>FPRs <span class="op">=</span> [FPR_calc(ps, FNR_calc, PPV_min) <span class="cf">for</span> ps <span class="kw">in</span> p]</span>
-<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, FPR <span class="kw">in</span> <span class="bu">enumerate</span>(FPRs):</span>
-<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(p.index[i] <span class="kw">in</span> [<span class="st">'Asian'</span>, <span class="st">'White'</span>]):</span>
-<span id="cb40-9"><a href="#cb40-9" aria-hidden="true" tabindex="-1"></a>        plt.plot(FNR_calc, FPR, label <span class="op">=</span> p.index[i])</span>
-<span id="cb40-10"><a href="#cb40-10" aria-hidden="true" tabindex="-1"></a>        plt.scatter(FNR[i], FPR[i])</span>
-<span id="cb40-11"><a href="#cb40-11" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.05</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.05</span>), alpha <span class="op">=</span> <span class="fl">0.1</span>)</span>
-<span id="cb40-12"><a href="#cb40-12" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.1</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.1</span>), alpha <span class="op">=</span> <span class="fl">0.2</span>)</span>
-<span id="cb40-13"><a href="#cb40-13" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.125</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.125</span>), alpha <span class="op">=</span> <span class="fl">0.4</span>)</span>
-<span id="cb40-14"><a href="#cb40-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'False Negative Rate'</span>)</span>
-<span id="cb40-15"><a href="#cb40-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'False Positive Rate'</span>)</span>
-<span id="cb40-16"><a href="#cb40-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Feasible (FNR, FPR) Combinations'</span>)</span>
-<span id="cb40-17"><a href="#cb40-17" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Based on the paper “Fair Prediction with Disparate Impact: A Study of Bias in Recidivism Prediction Instruments.” by Alexandra Chouldechova, we can examine how fair our model has the potential to be by finding the optimal combinations of FNR and FPR rates. We can calculate the FPR using the FNR with the equation <span class="math display">\[FPR = \frac{p}{1 - p}\frac{1 - PPV}{PPV}(1 - FNR)\]</span> where <span class="math inline">\(p\)</span> is the prevalence or actual employment rate. As an approximation to calibrate our results, we set the PPV to be the minimum PPV value between groups. In this case, we are only examining the White and Asian groups, so we use the Asian PPV as our value. We can add shading to the White line, which shows acceptable FPR values for the White group if we allow the the PPV of the White group to deviate by <span class="math inline">\(\delta = 0.5\)</span>, <span class="math inline">\(0.1\)</span>, and <span class="math inline">\(0.125\)</span> from the PPV of the Asian group. Based on the plot, if we desired to tune our classifier threshold so that the false positive rates were equal between races, we would need to increase the false negative rate of the Asian group to roughly <span class="math inline">\(0.2\)</span>. This is not a substantial change, indicating that we could achieve a fair outcome without much of a decrease in the accuracy of the model.</p>
+<div id="cell-51" class="cell" data-execution_count="26">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>PPV_min <span class="op">=</span> PPV[[<span class="st">'Asian'</span>, <span class="st">'White'</span>]].<span class="bu">min</span>()</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> df.groupby(<span class="st">'group'</span>)[<span class="st">'employed'</span>].mean()</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>FNR_calc <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">50</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>FPR_calc <span class="op">=</span> <span class="kw">lambda</span> p,FNR, PPV_min: (p<span class="op">/</span>(<span class="dv">1</span><span class="op">-</span>p)) <span class="op">*</span> ((<span class="dv">1</span> <span class="op">-</span> PPV_min)<span class="op">/</span>PPV_min)<span class="op">*</span>(<span class="dv">1</span> <span class="op">-</span> FNR)</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>FPRs <span class="op">=</span> [FPR_calc(ps, FNR_calc, PPV_min) <span class="cf">for</span> ps <span class="kw">in</span> p]</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, FPR <span class="kw">in</span> <span class="bu">enumerate</span>(FPRs):</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(p.index[i] <span class="kw">in</span> [<span class="st">'Asian'</span>, <span class="st">'White'</span>]):</span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a>        plt.plot(FNR_calc, FPR, label <span class="op">=</span> p.index[i])</span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>        plt.scatter(FNR[i], FPR[i])</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.05</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.05</span>), alpha <span class="op">=</span> <span class="fl">0.1</span>)</span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.1</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.1</span>), alpha <span class="op">=</span> <span class="fl">0.2</span>)</span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>plt.fill_between(FNR_calc, FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">-</span><span class="fl">0.125</span>),FPR_calc(p[<span class="st">'White'</span>], FNR_calc, PPV_min <span class="op">+</span><span class="fl">0.125</span>), alpha <span class="op">=</span> <span class="fl">0.4</span>)</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'False Negative Rate'</span>)</span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'False Positive Rate'</span>)</span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">'Feasible (FNR, FPR) Combinations'</span>)</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>plt.legend()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
