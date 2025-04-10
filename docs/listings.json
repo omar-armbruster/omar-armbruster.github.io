@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/logistic-regression/index.html",
       "/posts/perceptron/index.html",
       "/posts/auditing-bias/index.html",
       "/posts/automated-decision/index.html",
