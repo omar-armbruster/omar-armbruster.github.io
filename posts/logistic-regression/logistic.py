@@ -48,6 +48,19 @@ class LinearModel:
 class LogisticRegression(LinearModel):
     
     def loss(self,X,y):
+        """
+        Computes the loss over the entire data set X based on known labels y. 
+
+        ARGUMENTS:
+        X, torch.Tensor: the feature n by p dimensional feature matrix such that n is 
+        the number of observations and p is the number of features. Because we are using a linear model,
+        this implementaiton assumes that the last column is a constant column of 1s. 
+
+        y, torch.Tensor: An array of length n where the ith entry corresponds to the label of the ith row of X.
+
+        RETURNS: 
+            l, float: The loss of the given feature matrix based on the weights defined by self.w
+        """
         n = len(X)
         sigmoid = lambda x: 1/(1 + torch.exp(-x))
         s = self.score(X)
@@ -55,6 +68,19 @@ class LogisticRegression(LinearModel):
         return l
 
     def grad(self, X,y):
+        """
+        Computes the gradient needed to update self.w for gradient descent.
+
+        ARGUMENTS:
+        X, torch.Tensor: the feature n by p dimensional feature matrix such that n is 
+        the number of observations and p is the number of features. Because we are using a linear model,
+        this implementaiton assumes that the last column is a constant column of 1s. 
+
+        y, torch.Tensor: An array of length n where the ith entry corresponds to the label of the ith row of X.
+
+        RETURNS: 
+            grad: torch.Tensor: Array of length p representing the change to the self.w array.
+        """
         sigmoid = lambda x: 1/(1 + torch.exp(-x))
         s = self.score(X)
         grad = torch.mean((sigmoid(s) - y)[:,None]*X, axis = 0)
@@ -69,10 +95,24 @@ class GradientDescentOptimizer:
         """
         Compute one step of the perceptron update using the feature matrix X 
         and target vector y. 
+
+        ARGUMENTS:
+        X, torch.Tensor: the feature n by p dimensional feature matrix such that n is 
+        the number of observations and p is the number of features. Because we are using a linear model,
+        this implementaiton assumes that the last column is a constant column of 1s. 
+
+        y, torch.Tensor: An array of length n where the ith entry corresponds to the label of the ith row of X.
+
+        alpha, float: The learning rate for vanilla gradient descent. Determines how highly weighted the gradient updates
+        should be. alpha > 0 for the algorithm to work effectively.
+
+        beta, float: The learning rate for gradient descent with momentum. Determines how highly weighted the momentum term is,
+        which influences how large the adjustments to the weights are.
+
+        RETURNS:
+        NA, no return value but weights are updated based on the gradient function.
         """
         if self.model.loss(X, y) > 0:
-            # print(self.model.w, self.model.grad(X, y, alpha))
-            # self.model.w -= self.model.grad(X, y, alpha)
             new = self.model.w - alpha*self.model.grad(X,y) + beta*(self.model.w - self.model.wprev) 
             self.model.wprev = self.model.w
             self.model.w = new
