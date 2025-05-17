@@ -244,20 +244,20 @@ window.Quarto = {
 <section id="abstract" class="level1">
 <h1>Abstract</h1>
 <p>In this post we examine Newton’s method as an extension of gradient descent as well as the Adam Optimizer. We implement each optimizer and apply them to a logistic regression model to examine their efficacy. We compare Newton’s method to standard gradient descent and the Adam Optimizer to stochastic gradient descent on both simulated data and the empirical titanic dataset to evaluate their performances. We then compare Adam and Newton by determining how long it takes each to achieve a loss of <span class="math inline">\(0.5\)</span>. We find that Newton’s method is much faster than Adam for multiple learning rates. The code for the optimizers can be found <a href="https://github.com/omar-armbruster/omar-armbruster.github.io/blob/main/posts/advanced-optimization/optimizers.py">here</a>.</p>
-<div id="11b1610d" class="cell" data-execution_count="2">
+<div id="11b1610d" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="a612862a" class="cell" data-execution_count="3">
+<div id="a612862a" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>load_ext autoreload</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>autoreload <span class="dv">2</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> optimizers <span class="im">import</span> LogisticRegression, GradientDescentOptimizer, NewtonOptimizer, AdamOptimizer, StochasticGradientDescent</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We begin our experiments by defining a function to easily generate two-dimensional data with gaussian noise. This will allow us to test how well our optimizers work before applying them to more complex empirical data.</p>
-<div id="faac6132" class="cell" data-execution_count="4">
+<div id="faac6132" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Sourced from Phil Chodrow Lecture Notes</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> classification_data(n_points <span class="op">=</span> <span class="dv">300</span>, noise <span class="op">=</span> <span class="fl">0.2</span>, p_dims <span class="op">=</span> <span class="dv">2</span>):</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    </span>
@@ -271,7 +271,7 @@ window.Quarto = {
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> classification_data(noise <span class="op">=</span> <span class="fl">0.2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We also define plotting functions to allow us to visualize the decision regions and loss over numerous iterations of the algorithm. This will allwo us to easily evaluate the efficacy and efficiency of each optimizer.</p>
-<div id="cb995018" class="cell" data-execution_count="9">
+<div id="cb995018" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Data plotting function sourced from Phil Chodrow Lecture Notes</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> plot_data(X, y, ax):</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">assert</span> X.shape[<span class="dv">1</span>] <span class="op">==</span> <span class="dv">3</span>, <span class="st">"This function only works for data created with p_dims == 2"</span></span>
@@ -347,12 +347,12 @@ window.Quarto = {
 <section id="newton-on-empirical-data" class="level1">
 <h1>Newton on Empirical Data</h1>
 <p>To test the true strength of our Newton optimizer, we apply it to empirical data. For this case we use the Titanic dataset from the <code>seaborn</code> package. Our goal is to use the provided features to determine whether or not a given passenger was likely to have survived the sinking of the Titanic. Taking a quick look at the data, we can see features like sex, age, number of siblings/spouses aboard, and the class of ticket the passenger possessed, which each could have some sort of indication on whether a given passenger was more or less likely to survive.</p>
-<div id="c1788b95" class="cell" data-execution_count="5">
+<div id="c1788b95" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>empirical_data <span class="op">=</span> sns.load_dataset(<span class="st">'titanic'</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>empirical_data.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="8">
 <div>
 
 
@@ -475,7 +475,7 @@ window.Quarto = {
 </div>
 </div>
 <p>In order for our logisitic regression model to be able to process the data, we need to convert categorical variables to dummies as well as drop redundant columns and columns that might give away the true label. We also scale the continuous variables using a standard scaling so that all features are considered equally.</p>
-<div id="b0c8671f" class="cell" data-execution_count="6">
+<div id="b0c8671f" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>e_data <span class="op">=</span> empirical_data.dropna(axis <span class="op">=</span> <span class="dv">0</span>)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>y_e <span class="op">=</span> e_data[<span class="st">'survived'</span>]</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>e_data <span class="op">=</span> e_data.drop([<span class="st">'survived'</span>, <span class="st">'adult_male'</span>, <span class="st">'alone'</span>, <span class="st">'alive'</span>, <span class="st">'pclass'</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
@@ -484,7 +484,7 @@ window.Quarto = {
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>X_e[<span class="st">'age'</span>] <span class="op">=</span> (X_e[<span class="st">'age'</span>] <span class="op">-</span> X_e[<span class="st">'age'</span>].mean())<span class="op">/</span>X_e[<span class="st">'age'</span>].std()</span>
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>X_e[<span class="st">'fare'</span>] <span class="op">=</span> (X_e[<span class="st">'fare'</span>] <span class="op">-</span> X_e[<span class="st">'fare'</span>].mean())<span class="op">/</span>X_e[<span class="st">'fare'</span>].std()</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>X_e.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div class="cell-output cell-output-display" data-execution_count="9">
 <div>
 
 
@@ -644,7 +644,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We apply the train-test split, allowing us to validate our models after trianing them.</p>
-<div id="78658b45" class="cell" data-execution_count="7">
+<div id="78658b45" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X_e,y_e, test_size<span class="op">=</span><span class="fl">0.3</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> torch.tensor(X_train.to_numpy(), dtype <span class="op">=</span> torch.float32)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>y_train <span class="op">=</span> torch.tensor(y_train.to_numpy(), dtype <span class="op">=</span> torch.float32)</span>
@@ -652,7 +652,7 @@ window.Quarto = {
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>y_test <span class="op">=</span> torch.tensor(y_test.to_numpy(), dtype <span class="op">=</span> torch.float32)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Just as with the simulated data, we train our gradient descent and Newton optimizers for <span class="math inline">\(1000\)</span> iterations with a learning rate of <span class="math inline">\(\alpha = 0.1\)</span>.</p>
-<div id="ebd78f67" class="cell" data-execution_count="21">
+<div id="ebd78f67" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>LR_G <span class="op">=</span> LogisticRegression() </span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> GradientDescentOptimizer(LR_G)</span>
 <span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -663,7 +663,7 @@ window.Quarto = {
 <span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    loss_G.append(l)</span>
 <span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">0.1</span>, beta <span class="op">=</span> <span class="dv">0</span>, lam <span class="op">=</span> <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div id="22223aab" class="cell" data-execution_count="22">
+<div id="22223aab" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>LR_N <span class="op">=</span> LogisticRegression() </span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> NewtonOptimizer(LR_N)</span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -675,7 +675,7 @@ window.Quarto = {
 <span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">0.1</span>, lam <span class="op">=</span> <span class="fl">0.01</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Because there are more than two features, we cannot plot the decision boundaries. However, we observe a similar trend to the simulated data in the loss, where both converge to a low loss value with Newton’s method converging more quickly. This means that with an adequately selected value of <span class="math inline">\(\alpha\)</span>, Newton’s method can converge to the correct value of <span class="math inline">\(\textbf(w)\)</span> and in some cases, can converge faster than gradient descent.</p>
-<div id="14165c33" class="cell" data-execution_count="23">
+<div id="14165c33" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>)</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>plot_loss(loss_G, ax, label <span class="op">=</span> <span class="st">'Gradient Descent'</span>)</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>plot_loss(loss_N, ax, label <span class="op">=</span> <span class="st">'Newton Optimizer'</span>, ls <span class="op">=</span> <span class="st">':'</span>)</span>
@@ -689,14 +689,14 @@ window.Quarto = {
 </div>
 </div>
 <p>We can validate the training of our models and find that both achieve very similar testing losses, indicating that neither model was overfit, even though they converged quite quickly.</p>
-<div id="84f0bb5d" class="cell" data-execution_count="24">
+<div id="84f0bb5d" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Gradient Descent Test Loss: </span><span class="sc">{}</span><span class="st"> Newton Test Loss: </span><span class="sc">{}</span><span class="st">"</span>.<span class="bu">format</span>(LR_G.loss(X_test, y_test).item(), LR_N.loss(X_test, y_test).item()))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Gradient Descent Test Loss: 0.49521735310554504 Newton Test Loss: 0.4953036904335022</code></pre>
+<pre><code>Gradient Descent Test Loss: 0.46767881512641907 Newton Test Loss: 0.46853649616241455</code></pre>
 </div>
 </div>
 <p>We can also test the case where <span class="math inline">\(\alpha\)</span> is selected to be too high, in which we expect Newton’s method to fail. We train our two models as we did in the previous experiments.</p>
-<div id="b3accada" class="cell" data-execution_count="27">
+<div id="b3accada" class="cell" data-execution_count="35">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>LR_G <span class="op">=</span> LogisticRegression() </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> GradientDescentOptimizer(LR_G)</span>
 <span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -705,7 +705,7 @@ window.Quarto = {
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">100</span>):</span>
 <span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    l <span class="op">=</span> LR_G.loss(X_train,y_train, lam <span class="op">=</span> <span class="dv">0</span>)</span>
 <span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    loss_G.append(l)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="dv">4</span>, beta <span class="op">=</span> <span class="dv">0</span>, lam <span class="op">=</span> <span class="dv">0</span>)</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">3.5</span>, beta <span class="op">=</span> <span class="dv">0</span>, lam <span class="op">=</span> <span class="dv">0</span>)</span>
 <span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>LR_N <span class="op">=</span> LogisticRegression() </span>
 <span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> NewtonOptimizer(LR_N)</span>
@@ -717,10 +717,10 @@ window.Quarto = {
 <span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(LR_N.w)</span></span>
 <span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># print(LR_N.score(X_train))</span></span>
 <span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>    loss_N.append(l)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="dv">4</span>, lam <span class="op">=</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>    opt.step(X_train, y_train, alpha <span class="op">=</span> <span class="fl">3.5</span>, lam <span class="op">=</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>When we plot the loss, we find that standard gradient decent is still able to converge (although much slower) while Newton’s method does not converge at all, oscillating between high loss values near the starting loss. This means that while Newton’s method can be quite powerful, it is also fallabile and some cases.</p>
-<div id="68c11802" class="cell" data-execution_count="28">
+<div id="68c11802" class="cell" data-execution_count="36">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>,<span class="dv">1</span>)</span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>plot_loss(loss_G, ax, label <span class="op">=</span> <span class="st">'Gradient Descent'</span>)</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>plot_loss(loss_N, ax, label <span class="op">=</span> <span class="st">'Newton Optimizer'</span>, ls <span class="op">=</span> <span class="st">':'</span>)</span>
@@ -737,7 +737,7 @@ window.Quarto = {
 <section id="adam-optimizer" class="level1">
 <h1>Adam Optimizer</h1>
 <p>We also implement the Adam Optimizer, a common optimizer used in deep learning models, behaving very similarly to stochastic gradient descent (SGD). The Adam Optimizer randomly selects batches whose size are determined by the <code>batch_size</code> parameter and then updates the weights such that <span class="math display">\[w^{t + 1} = w^t - \alpha \frac{\hat{m}}{\sqrt{\hat{v}} + \epsilon}\]</span> where <span class="math inline">\(\hat{m}\)</span> and <span class="math inline">\(\hat{v}\)</span> are variables based on the gradient that change with time (the number of iterations) and constants <span class="math inline">\(\beta_1\)</span> and <span class="math inline">\(\beta_2\)</span>. This time dependent behavior means the step size will decrease with each iteration, allowing for a more precise convergence on the optimal weights near the last few iterations. We train our models with the Adam and SGD optimizers using a learning rate of <span class="math inline">\(\alpha = 0.01\)</span>. In order to fine tune our models, we use a very small regularization term for Adam and no regularization for SGD.</p>
-<div id="f37fdddc" class="cell" data-execution_count="49">
+<div id="f37fdddc" class="cell" data-execution_count="17">
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>LR_A <span class="op">=</span> LogisticRegression() </span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> AdamOptimizer(LR_A, <span class="dv">10</span>, <span class="fl">0.01</span>, <span class="fl">0.9</span>, <span class="fl">0.999</span>)</span>
 <span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -760,7 +760,7 @@ window.Quarto = {
 <span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    opt.step(X, y, lam <span class="op">=</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>When we plot the fit of these two optimizers, we find that both are able to achieve comparable decision boundaries and final losses, but with Adam converging more quickly than the standard SGD.</p>
-<div id="afcb13df" class="cell" data-execution_count="50">
+<div id="afcb13df" class="cell" data-execution_count="18">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize <span class="op">=</span> (<span class="dv">8</span>, <span class="dv">5</span>))</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>fig.suptitle(<span class="st">'Adam and SGD'</span>)</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>plot_results(LR_A, X, y, loss_A, ax, label <span class="op">=</span> <span class="st">'Adam'</span>)</span>
@@ -776,7 +776,7 @@ window.Quarto = {
 </div>
 </div>
 <p>We compare these two optimizers on the Titanic data as well for three values of <span class="math inline">\(\alpha\)</span>. For <span class="math inline">\(\alpha = 0.001\)</span>, we find that both begin to converge (although do not fully converge after <span class="math inline">\(1000\)</span> iterations) but the SGD converges at a slower rate than the Adam optimizer.</p>
-<div id="efab051e" class="cell" data-execution_count="11">
+<div id="efab051e" class="cell" data-execution_count="19">
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>LR_A <span class="op">=</span> LogisticRegression() </span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> AdamOptimizer(LR_A, <span class="dv">10</span>, <span class="fl">0.001</span>, <span class="fl">0.9</span>, <span class="fl">0.999</span>)</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -812,7 +812,7 @@ window.Quarto = {
 </div>
 </div>
 <p>With a higher learning rate of <span class="math inline">\(\alpha = 0.01\)</span>, we observe a similar convergance but in much fewer iterations as the steps towards the optimal weights at each step will be larger.</p>
-<div id="2d51ce24" class="cell" data-execution_count="11">
+<div id="2d51ce24" class="cell" data-execution_count="20">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>LR_A <span class="op">=</span> LogisticRegression() </span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> AdamOptimizer(LR_A, <span class="dv">10</span>, <span class="fl">0.01</span>, <span class="fl">0.9</span>, <span class="fl">0.999</span>)</span>
 <span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -848,7 +848,7 @@ window.Quarto = {
 </div>
 </div>
 <p>When we use <span class="math inline">\(\alpha = 0.1\)</span> for the two optimizers, we find that Adam still converges faster but appears to converge at a higher loss value than SGD. Like Newton, speed appears to come at the expense of accuracy when <span class="math inline">\(\alpha\)</span> is too large, meaning we need to be more cognicant of the learning rate we choose when using these more powerful optimizers.</p>
-<div id="24b7ce93" class="cell" data-execution_count="13">
+<div id="24b7ce93" class="cell" data-execution_count="21">
 <div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>LR_A <span class="op">=</span> LogisticRegression() </span>
 <span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> AdamOptimizer(LR_A, <span class="dv">10</span>, <span class="fl">0.1</span>, <span class="fl">0.9</span>, <span class="fl">0.999</span>)</span>
 <span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -886,8 +886,8 @@ window.Quarto = {
 </section>
 <section id="newton-vs-adam" class="level1">
 <h1>Newton vs Adam</h1>
-<p>Lastly we want to compare our two implemented optimizers. Becuase the computations are so different between the two methods, we want to measure the different in time to achieve a loss value rather than the number of iterations. We can test this for multiple values of <span class="math inline">\(\alpha\)</span> by determining the amount of time it takes to achieve a loss of <span class="math inline">\(0.5\)</span> or hit <span class="math inline">\(1000\)</span> iterations (to avoid an infinite loop). We print the times for each below and find that at lower values of <span class="math inline">\(\alpha\)</span>, Adam appears to be faster. However, as <span class="math inline">\(\alpha\)</span> increases, the times become closer and closer before Newton becomes the faster optimizer at <span class="math inline">\(\alpha = 1\)</span>. Based on the times below, Adam is fastest at <span class="math inline">\(\alpha = 0.1\)</span>, taking <span class="math inline">\(0.013\)</span> seconds to converge. However, from our previous experiment, we know that when <span class="math inline">\(\alpha = 0.1\)</span>, Adam converges at a fairly high loss value. This means that there is some tradeoff between speed and accuracy to consider when choosing the optimal learning rate.</p>
-<div id="8bc7835f" class="cell" data-execution_count="13">
+<p>Lastly we want to compare our two implemented optimizers. Becuase the computations are so different between the two methods, we want to measure the different in time to achieve a loss value rather than the number of iterations. We can test this for multiple values of <span class="math inline">\(\alpha\)</span> by determining the amount of time it takes to achieve a loss of <span class="math inline">\(0.5\)</span> or hit <span class="math inline">\(1000\)</span> iterations (to avoid an infinite loop). We print the times for each below and find that at lower values of <span class="math inline">\(\alpha\)</span>, Adam appears to be faster. However, as <span class="math inline">\(\alpha\)</span> increases, the times become closer and closer before Newton becomes the faster optimizer at <span class="math inline">\(\alpha = 1\)</span>. Based on the times below, Adam is fastest at <span class="math inline">\(\alpha = 0.1\)</span>, taking <span class="math inline">\(0.008\)</span> seconds to converge. However, from our previous experiment, we know that when <span class="math inline">\(\alpha = 0.1\)</span>, Adam converges at a fairly high loss value. This means that there is some tradeoff between speed and accuracy to consider when choosing the optimal learning rate.</p>
+<div id="8bc7835f" class="cell" data-execution_count="22">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>alphas <span class="op">=</span> [<span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.1</span>, <span class="dv">1</span>]</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> alpha <span class="kw">in</span> alphas:</span>
@@ -927,17 +927,17 @@ window.Quarto = {
 <span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">'Newton Optimizer Time: </span><span class="sc">{}</span><span class="st">'</span>.<span class="bu">format</span>(end <span class="op">-</span> start))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>--------alpha = 0.001--------
-Adam Optimizer Time: 0.2670631408691406
-Newton Optimizer Time: 0.662290096282959
+Adam Optimizer Time: 0.2750883102416992
+Newton Optimizer Time: 0.7343175411224365
 --------alpha = 0.01--------
-Adam Optimizer Time: 0.013987302780151367
-Newton Optimizer Time: 0.29062414169311523
+Adam Optimizer Time: 0.018273591995239258
+Newton Optimizer Time: 0.32607245445251465
 --------alpha = 0.1--------
-Adam Optimizer Time: 0.012781858444213867
-Newton Optimizer Time: 0.03364896774291992
+Adam Optimizer Time: 0.008029460906982422
+Newton Optimizer Time: 0.030339717864990234
 --------alpha = 1--------
-Adam Optimizer Time: 0.01615738868713379
-Newton Optimizer Time: 0.0169677734375</code></pre>
+Adam Optimizer Time: 0.040769338607788086
+Newton Optimizer Time: 0.0</code></pre>
 </div>
 </div>
 </section>

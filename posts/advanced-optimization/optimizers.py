@@ -121,15 +121,16 @@ class NewtonOptimizer:
     def __init__(self, model):
         self.model = model
     
-    def hessian(self, X, y):
+    def hessian(self, X, y, lam = 0):
         sigmoid = lambda x: 1/(1 + torch.exp(-x))
         diag = (torch.eye(X.size(0)) * sigmoid(y)*(1 - sigmoid(y)))
         hess = (X.T@diag@X)/X.size(0)
-        return hess
+        I = torch.eye(hess.size(0))
+        return hess + lam*I
     
     def step(self, X, y, alpha = 1, lam = 0):
         if self.model.loss(X, y) > 0:
-            new = self.model.w - alpha*torch.linalg.pinv(self.hessian(X,y))@self.model.grad(X,y, lam)
+            new = self.model.w - alpha*torch.linalg.pinv(self.hessian(X,y, lam))@self.model.grad(X,y, lam)
             self.model.wprev = self.model.w
             self.model.w = new
 
