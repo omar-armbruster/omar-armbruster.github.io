@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.40">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2025-05-19">
+<meta name="description" content="Identifying the optimal locations for solar energy system development in the continental US">
+
+<title>Project Solar-Searcher – Omar Armbruster</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-549806ee2085284f45b00abea8c6df48.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-afd1c537f28ba892ec3c7a1a10902170.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>
+
+      .quarto-title-block .quarto-title-banner h1,
+      .quarto-title-block .quarto-title-banner h2,
+      .quarto-title-block .quarto-title-banner h3,
+      .quarto-title-block .quarto-title-banner h4,
+      .quarto-title-block .quarto-title-banner h5,
+      .quarto-title-block .quarto-title-banner h6
+      {
+        color: white;
+      }
+
+      .quarto-title-block .quarto-title-banner {
+        color: white;
+background-image: url(../../img/landscape.png);
+background-size: cover;
+      }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Omar Armbruster</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/omar-armbruster"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://www.linkedin.com/in/omar-armbruster-38951621b/"> <i class="bi bi-linkedin" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Project Solar-Searcher</h1>
+                  <div>
+        <div class="description">
+          Identifying the optimal locations for solar energy system development in the continental US
+        </div>
+      </div>
+                </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Authors</div>
+      <div class="quarto-title-meta-contents">
+               <p>Omar Armbruster </p>
+               <p>Andrew Dean </p>
+               <p>Col McDermott </p>
+               <p>Noah Price </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">May 19, 2025</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+
+<section id="abstract" class="level1">
+<h1>1. Abstract</h1>
+<p>As the severity of climate change continues to increase and the consumption of energy in the US remains massive, a critical focus of today’s power industry is establishing sources of renewable energy to replace less climate-friendly alternatives. Focusing on solar energy systems, we aim to address the problem of locating optimal regions throughout the US to build solar farms for cleaner energy production. Our general approach to this problem is to determine the predicted energy output of installing a solar system at a given coordinate location in the continental US. Leveraging several machine learning techniques to assist our success, we chose to frame this problem as a standard regression task performed by a predictive model. For training and informing the design of our predictive models, we collected, cleaned, and combined location-specific data from several sources on weather, elevation, and solar statistics throughout the continental US. Our modeling approach involves the use of a custom neural network and experimentation with different network layers and nonlinear activation functions. In addition to constructing our custom models, we fit and evaluated a standard linear regression and polynomial regression model from the <code>sklearn</code> library to compare predictive performance across several model architectures (performance assessed via Mean-Squared-Error loss minimization). From our model tuning and comparison procedures, we found that a linear regression model using the ReLU activation function offers the second most accurate solar energy predictions, falling short only to the prebuilt polynomial regression model from <code>sklearn</code>. To visualize and interpret our findings, we developed an interactive map of the continental US, displaying predicted solar energy output (in <strong>kWh/kWp</strong> <span class="math inline">\(-\)</span> kilowatt-hour per kilowatt-peak) at a resolution of approximately <span class="math inline">\(4\)</span> km <span class="math inline">\(^2\)</span>. We intend for our potential solar energy map to stand as a practical tool for guiding future solar power system development and planning.</p>
+<p>The entirety of our work is accessible in the following public repository: <a href="https://github.com/andrewdean1/solar-searcher">Solar-Searcher</a></p>
+</section>
+<section id="introduction" class="level1">
+<h1>2. Introduction</h1>
+<section id="motivation" class="level3">
+<h3 class="anchored" data-anchor-id="motivation">2.1 Motivation</h3>
+<p>As acknowledged above, climate change and global warming continue to rapidly intensify, driving adversity towards billions of people and countless species of wildlife across the planet. In a 2023 report from the World Health Organization, it was conservatively projected that climate change will cause an additional <span class="math inline">\(250,000\)</span> annual deaths by 2030 <span class="citation" data-cites="who2023">(<a href="#ref-who2023" role="doc-biblioref">World Health Organization 2023</a>)</span>. Along similar and possibly more severe lines, the World Wide Fund for Nature reports a “catastrophic <span class="math inline">\(73\%\)</span> decline in the average size of monitored wildlife populations” over the past 50 years <span class="citation" data-cites="wwf2024">(<a href="#ref-wwf2024" role="doc-biblioref">World Wildlife Fund 2024</a>)</span>. Perhaps the most significant threat posed by climate change and global warming is the irreparable and irreversible alteration of the planet’s biosphere. Some experts even fear that the “point of no return” has already been passed. Yet, despite the daunting effects and implications of the current climate circumstances, it remains crucial to direct worldwide attention, technology, and resources towards establishing climate-conscious societies. It is widely recognized that some of the largest contributors to the current climate crisis are carbon-intensive, non-renewable energy production systems. Consequently, large actors of the global power industry, including governmental bodies and officials throughout many nations, are drawing their attention toward the development of planet-supporting energy solutions. Such solutions involve the replacement of preexisting, harmful energy systems with renewable alternatives. Simply put, establishing renewable and regenerative energy sources is an irrefutably necessary step in combating global warming.</p>
+<p>Three of the most common avenues for renewable energy systems are in solar-, hydro-, and wind-powered generators. While these clean-energy sources are proven to be not only highly effective but also regenerative (or supporting of regeneration), they often require a complex set of specific circumstances for construction. Significant renewable energy system limitations include geographical/topological elements and the consistency of weather conditions of a given power production location. To function at peak capacity and comparably to traditional, environmentally abrasive methods, developers aim to install renewable energy systems in regions with the optimal set of conditions. Consequently, the task of identifying these optimal installation locations becomes a primary concern of renewable energy development. As one of the most abundant sources of renewable energy in the continental US, we direct our attention in this study to the development of solar energy systems. Specifically, we intend to address several key concerns of photovoltaic (PV) system implementation including: What factors should solar energy developers take into consideration when initiating installation projects? Based on the relevant factors, which regions are optimal locations for PV system development? At a given location, how can the quality of installing a solar energy system be quantified and compared to other neighboring areas? Driven by these questions, our study offers an approach to solar energy forecasting in the continental US.</p>
+</section>
+<section id="related-work" class="level3">
+<h3 class="anchored" data-anchor-id="related-work">2.2 Related Work</h3>
+<p>Solar energy forecasting has been widely addressed with the use of machine learning tools and techniques. Previous research in this area includes the incorporation of neural network-based models, random forest classifiers, and linear regression techniques <span class="math inline">\(-\)</span> as well as thorough collection and preprocessing procedures of meteorological data <span class="math inline">\(-\)</span> to provide informative insight for predicting solar power production. A 2020 study focusing on solar energy production in Hawaii found a gradient-boosted regression model enhanced with a standard PCA data process to yield strong predictive results for solar power forecasting <span class="citation" data-cites="Munawar2020">(<a href="#ref-Munawar2020" role="doc-biblioref">Munawar and Wang 2020</a>)</span>. Similarly, a 2021 article describes another forecasting framework comparing linear and nonlinear regression models, experimenting with artificial neural network architectures, for predicting solar energy production in Morocco <span class="citation" data-cites="JEBLI2021120109">(<a href="#ref-JEBLI2021120109" role="doc-biblioref">Jebli et al. 2021</a>)</span>. Alternatively, a related 2022 study on solar energy forecasting found compelling results using a modeling approach featuring a machine learning ensemble-to-classifier pipeline operating on standard weather data <span class="citation" data-cites="Alzubaidi2022">(<a href="#ref-Alzubaidi2022" role="doc-biblioref">Alzubaidi et al. 2022</a>)</span>. In our study, we aim to extend the previous research in this field and develop a comprehensible, accessible PV energy prediction framework oriented for the continental US.</p>
+</section>
+<section id="study-overview" class="level3">
+<h3 class="anchored" data-anchor-id="study-overview">2.3 Study Overview</h3>
+<p>In the sections below, we present our data collection and cleaning protocols; our model designs, neural network architecture, and model comparisons; our solar forecasting results; and an accompanying discussion addressing our progress and potential future work. Additionally, as a preface to the technical content explored in our study, we offer a brief acknowledgement of the societal implications and impact of our work.</p>
+</section>
+</section>
+<section id="values-statement" class="level1">
+<h1>3. Values Statement</h1>
+<section id="affected-parties-benefits-and-harms" class="level3">
+<h3 class="anchored" data-anchor-id="affected-parties-benefits-and-harms">3.1 Affected Parties, Benefits, and Harms</h3>
+<p>We view the potential users of our project to be a fairly wide range, including governmental initiatives, commercial enterprises, and possibly individuals looking to invest in small-scale solar farming. Essentially, any party with potential interest in making use of solar energy has the potential to use our project.</p>
+<p>Under the assumption that our model will be used to inform solar development, potentially affected parties are the aforementioned end users, who may be benefitted by accurate results informing optimal solar energy development, or harmed if the results are misleading and do not accurately represent the theoretical output. Overall, local communities also have the potential to be impacted, as solar farms do take up a reasonable amount of property, which requires zoning and adequate space <span class="citation" data-cites="Igini2023">(<a href="#ref-Igini2023" role="doc-biblioref">Igini 2023</a>)</span>. One other concern is that our application may unfairly harm underrepresented or marginalized groups, as solar panels are expensive to develop, and our model may prioritize more privileged areas. Lastly, it is important to recognize that while our project aims to optimize renewable energy generation, machine learning models require a significant amount of energy to train. While our model specifically only had to undergo training a limited number of times, it is still worth recognizing that in developing cleaner energy, we do have to make use of existing power.</p>
+<p>To summarize, given the increasing global need for sustainable forms of energy, we believe that our model has the potential to be beneficial to the planet overall if it is used to promote development of solar energy. However, we also recognize the potential harms associated with inaccuracies in the model or over prioritization of certain areas over others.</p>
+</section>
+<section id="personal-investment" class="level3">
+<h3 class="anchored" data-anchor-id="personal-investment">3.2 Personal Investment</h3>
+<p>From a personal perspective, we all are invested in this project because we see its potential to improve the efficiency of new solar developments, and optimize implementations of renewable energy. We are passionate about increasing the amount of renewable energy used in our ecosystem, and view solar energy as one of the most widely applicable sources. We also believe that leveraging the now widely available data on solar irradiance, weather, and other geological features is a sensible step in the right direction for solar development.</p>
+<p>Common criticisms of solar energy include its high initial cost, variability with weather, and the requirement of land and materials to make use of this technology <span class="citation" data-cites="Igini2023">(<a href="#ref-Igini2023" role="doc-biblioref">Igini 2023</a>)</span>. Given these difficulties, we find that leveraging data to find patterns of efficiency in solar power generation has the potential to make solar development a more viable source of clean, renewable energy. Using weather data as a feature in our model allows us to factor in weather variability by location, and more closely study the correlations between certain weather features and photovoltaic output. By determining the optimal locations for solar farms, we can also minimize the impacts of high initial costs and the land requirements, as fewer farms will be needed to achieve the same end results.</p>
+</section>
+<section id="overall-reflection" class="level3">
+<h3 class="anchored" data-anchor-id="overall-reflection">3.3 Overall Reflection</h3>
+<p>Based on this reflection, our technology has the potential to make the world a more sustainable place, as solar power has the potential to replace harmful fossil fuels in the energy ecosystem. This outcome also has the potential to make the world a more equitable place, as developing solar energy has the potential to make energy more available in the long term. While there are potential harms associated with predicting photovoltaic output by location, we find that on balance, the potential benefits are strong, and the harms can be minimized through thorough evaluation of our models.</p>
+</section>
+</section>
+<section id="materials-and-methods" class="level1">
+<h1>4. Materials and Methods</h1>
+<section id="data-collection" class="level3">
+<h3 class="anchored" data-anchor-id="data-collection">4.1 Data Collection</h3>
+<p>The data used in our study was gathered from a collection of publicly available sources from national and international organizations. For solar irradiance and photovoltaic information, we collected data from the National Renewable Energy Laboratory (NREL) <span class="citation" data-cites="nrel2025">(<a href="#ref-nrel2025" role="doc-biblioref">National Renewable Energy Laboratory 2025</a>)</span> and the Global Solar Atlas (GSA) from The World Bank <span class="citation" data-cites="WorldBank2019">(<a href="#ref-WorldBank2019" role="doc-biblioref">The World Bank Group, ESMAP, and Solargis 2019</a>)</span>. For weather and elevation statistics, we pulled data from the Copernicus Climate Change Service (C3S) <span class="citation" data-cites="Hersbach2023">(<a href="#ref-Hersbach2023" role="doc-biblioref">Hersbach et al. 2023</a>)</span> and the Google Maps API. Outlined below are more detailed descriptions of the specific data sources used in our study:</p>
+<section id="photovoltaic-output-pvo" class="level4">
+<h4 class="anchored" data-anchor-id="photovoltaic-output-pvo"><u>Photovoltaic Output (PVO)</u></h4>
+<p>Photovoltaic output (measured in <strong>kWh/kWp</strong> <span class="math inline">\(-\)</span> kilowatt-hour per kilowatt-peak) is a quantitative measurement of the amount of producible energy from a solar/PV power system. Specifically, PVO represents the amount of power generated per unit of a given solar energy installation over the long term. Defined in kWh/kWp, PVO describes the energy output in kilowatt-hours of a single PV unit operating at peak performance (according to standard testing conditions) over a designated, long-term period of time. In general, PVO provides a baseline metric for the energy production capacity of a given solar energy system. We collected PVO data from The World Bank’s Global Solar Atlas <span class="citation" data-cites="WorldBank2019">(<a href="#ref-WorldBank2019" role="doc-biblioref">The World Bank Group, ESMAP, and Solargis 2019</a>)</span>. The PVO dataset we used contains monthly average “practical potential” PVO values from 1999-2018 for a <span class="math inline">\(0.0083^\circ\)</span>-latitude by <span class="math inline">\(0.0083^\circ\)</span>-longitude grid (~<span class="math inline">\(1\)</span> km <span class="math inline">\(^2\)</span>) of the entire US. Each potential PVO value is calculated using a multi-step modeling process combining satellite imagery, meteorological data, and PV system simulations developed by Solargis <span class="citation" data-cites="solargis_solar_radiation">(<a href="#ref-solargis_solar_radiation" role="doc-biblioref">Solargis, n.d.</a>)</span>. For each month of the year (12 total data subsets), each row represents the potential PVO value at a given latitude-longitude coordinate location of the US. The figure below provides a visual representation of the PVO dataset used in our study.</p>
+<figure class="figure">
+<img src="images/pvo_maps.png" alt="pvo_maps" class="figure-img">
+<figcaption>
+<b>Figure 1: Visualizing the potential PVO data for the months of January, April, July, and October</b>.
+</figcaption>
+</figure>
+<p>Relating to our primary regression objective, we use PVO as the target variable for our predictive models (see sections below for a more detailed discussion). Considering the crucial role that the collected PVO data plays in our modeling approach, the limitations of this dataset should be addressed. Firstly, this dataset contains monthly average values over a ~20 year span, which may disregard or underrepresent historically significant spikes and drops in PVO. Additionally, the values in this dataset are defined in terms of a single PV unit installed at the optimal panel tilt angle. The size of PV units and the optimal panel tilt can vary considerably from installation to installation. Thus, it should be noted that the values in this dataset may be overgeneralizing the projected PV energy yield for certain US regions. Further, the calculated PVO values in this data depend on numerous other relevant solar radiation and meteorological components, which may result in excessive variable correlations in the context of regression models (see sections below for further discussion on this).</p>
+</section>
+<section id="irradiance-ghi" class="level4">
+<h4 class="anchored" data-anchor-id="irradiance-ghi"><u>Irradiance (GHI)</u></h4>
+<p>Solar irradiance (measured in W/m2) quantifies the instantaneous power of sunlight striking a surface. We used Global Horizontal Irradiance (GHI) – the sum of direct beam and diffuse sky radiation on a level plane – as the primary input for photovoltaic (PV) yield models, since PV output scales roughly linearly with incident irradiance (<span class="citation" data-cites="nrel2025">National Renewable Energy Laboratory (<a href="#ref-nrel2025" role="doc-biblioref">2025</a>)</span>). Our GHI data from the U.S. Department of Energy’s National Renewable Energy Laboratory (NREL), published as the Physical Solar Model version 3 (PSM v3) from 1998-2016. This dataset contains monthly and annual GHI averages covering 0.038-degree latitude by 0.038-degree longitude (roughly 4 km by 4 km). This data was produced by merging satellite cloud-detection with radiative transfer clear-sky (REST2) and cloudy-sky (FARMS) models. Each row corresponds to one grid cell’s location, and reports its twelve monthly mean GHI values. There are some limitations to consider upon using this dataset. Firstly, values are monthly means, meaning they omit potential important peaks or lows. Next, panel tilt – finding the optimal angle to capture GHI – is not captured nor discussed by NREL. Lastly, recent climatic trends are not reflected as this data spans only up until 2016; overall weather patterns and irradiance values may have fluctuated since then.</p>
+</section>
+<section id="weather" class="level4">
+<h4 class="anchored" data-anchor-id="weather"><u>Weather</u></h4>
+<p>We theorized that the climate of a given area may have a substantial impact on the PVO, as factors like cloud coverage and precipitation would influence the amount of sun available to solar farms. We sourced data from ERA5, the fifth iteration of climate reanalysis data from the European Centre for Medium-Range Weather Forecasts (ECMFW), which combines observations with model data to create a physically accurate and consistent climate dataset <span class="citation" data-cites="Hersbach2023">(<a href="#ref-Hersbach2023" role="doc-biblioref">Hersbach et al. 2023</a>)</span>. We pulled monthly data from 1999 to 2018 for features cvh (high vegetation cover as a fraction of the latitude-longitude grid), sd (snow depth in m of water), msl (sea level pressure in Pa), tcc (cloud cover as a fraction of the latitude-longitude grid), t2m (2 meter temperature K), u100 (100 meter latitudinal wind component in m/s), v100 (100 meter longitudinal wind component m/s), sf (snowfall in m of water), and tp (total precipitation in m of water). We collected this data for latitude and longitude values in the United States in 0.25 degree increments and took the mean over all months and years. We made heatmaps for vegetation cover and and total precipitation to observe how these variables changed with latitude and lonigitude, which are shown in Figures 3 and 4.</p>
+<figure class="figure">
+<img src="images/Total precipitation visualization.PNG" alt="TotPrecip" class="figure-img">
+<figcaption>
+<b>Figure 3: Total Precipitation Heat Map</b>.
+</figcaption>
+</figure>
+<figure class="figure">
+<img src="images/Vegetation Cover Visualization.PNG" alt="VegCover" class="figure-img">
+<figcaption>
+<b>Figure 4: Vegetation Cover Heat Map.</b>
+</figcaption>
+</figure>
+<p>Because this dataset is from a reputable source and is fairly comprehensive, we can trust that our data is reliable. However, it is not without its limitations, particularly because the changes in latitude and longitude are quite coarse with each latitude-longitude pair corresponding to a 17.25x17.25 mile grid. While we were able to achieve finer measurements for our other data sources, we needed to make them more coarse in order to be consistent with this data (see Combining the Data). The climate variables we selected were chosen based on what we thought would have the largest impact on PVO, but our decisions were not backed by any quantitative evidence. Should we seek to make a more thorough model, we likely would want to select more climate features (many of which are provided by ERA5) and determine through quantitative analysis (like a correlation plot) which features would be most effective.</p>
+</section>
+<section id="elevation" class="level4">
+<h4 class="anchored" data-anchor-id="elevation"><u>Elevation</u></h4>
+<p>Lastly, in our data planning, we theorized that elevation may be correlated with photovoltaic output on the assumption that higher elevation would have more potential to capture the sun’s energy. Given the resolution challenges we were having with our other datasets, and the difficulty of finding matching data for elevation, we elected to use the Google Maps Elevation API to retrieve elevation data. With this approach, we can simply make API requests for latitude longitude pairs after all of the other data has been combined. The API accepts latitude and longitude, and returns the elevation of that location, as well as the resolution of the measurement, in meters <span class="citation" data-cites="google_elevation_api">(<a href="#ref-google_elevation_api" role="doc-biblioref">Google Developers 2024</a>)</span>. The measurement is relative to sea level, so elevation values can be positive or negative. Google acquired this data using NASA’s shuttle radar program <span class="citation" data-cites="google_elevation_api">(<a href="#ref-google_elevation_api" role="doc-biblioref">Google Developers 2024</a>)</span></p>
+<p>The main limitation affecting this dataset is the variable resolution of the measurements. Areas with higher resolution may more accurately capture terrain features such as small hills or cliffs, while areas with lower resolution may be slightly misrepresented, or smoothed over. As a result, if our model finds that elevation is highly correlated with photovoltaic output, the resolution could be a source of bias in our results. A more practical limitation are the rate limits: we can only make 512 elevation requests at a time, and only a certain number of requests per day. Luckily, this was only a minor issue for our data collection, simply requiring us to write a batch request function to perform 512 requests at a time until we had the complete dataset.</p>
+<p>The figure below shows the correlation between elevation and photovoltaic output in our final dataset, on a small representative sample.</p>
+<figure class="figure">
+<img src="images/elv_pvo.png" alt="Elv vs PVO" class="figure-img">
+<figcaption>
+<b>Figure 5: Elevation vs Photovoltaic Output</b>.
+</figcaption>
+</figure>
+<p>As the figure shows, there is some positive correlation between elevation and photovoltaic output, but it is a noisy relationship, and much of the elevation data is clustered in the zero to five hundred meter range. As a result, elevation was not the most strongly correlated feature in our dataset, but the outlying areas of high elevation showed strong photovoltaic output.</p>
+</section>
+</section>
+<section id="dataset-compilation-construction" class="level3">
+<h3 class="anchored" data-anchor-id="dataset-compilation-construction">4.2 Dataset Compilation &amp; Construction</h3>
+<p>With all of these data sources in place, we began our process of combining the datasets into a single csv file by reading our .tif image files. We wrote conversion functions which would read the data from the .tif files, construct a dataframe containing the relevant rows and columns, then export that dataframe to a csv. At that point, we had constructed the relevant csvs, and then needed to deal with the issue of resolution.</p>
+<p>Unfortunately, because our irradiance data was subject to a lower resolution than our photovoltaic output data, we were forced to downsample the resolution to two decimal places. To accomplish this, we simply created a temporary rounded column, then used an inner join on two dataframes using that rounded column, before dropping the mismatched columns and renaming the rounded column accordingly. This allowed us to combine our two key solar datasets, and though we did lose resolution, we were able to keep all of the relevant data points. However, merging this dataset with the weather dataset was a more complicated issue. If we used the same downsampling technique, we would lose a fair number of our data points, due to a mismatch in the latitude and longitude ranges between the solar and weather datasets. Because these datasets were collected separately from different sources, there were different ranges of latitude and longitude, though there was a great deal of overlap since both datasets pertain to the United States, of course. To account for this difficulty, we used a <code>cKDtree</code>, which allows a nearest-neighbor approach to merging the dataset. Essentially, this structure indexes the latitudes and longitudes in the solar dataset, then queries the weather dataset to find the nearest neighboring points, merging values within a certain range. By taking this approach, we were able to maintain over 400000 data points in our final csv, which is a dataset size that we were very happy to achieve.</p>
+<p>The last step after this combination was to simply use the batch request function to query the Google Maps API for the relevant latitudes and longitudes, then export the finalized dataframe to a csv for ease of access between notebooks. With the full dataset in place, we constructed a correlation matrix for our features, which shows the strength and positive or negative value of correlation between each feature. The correlation matrix is shown below.</p>
+<figure class="figure">
+<img src="images/corr_mat.png" alt="Elv vs PVO" class="figure-img">
+<figcaption>
+<b>Figure 6: Correlation Matrix</b>.
+</figcaption>
+</figure>
+<p>While there are many interesting trends to observe in this correlation matrix, we were mostly concerned with the correlations to photovoltaic output (pvo). The strongest positive correlation was with solar irradiance, which follows our expectations, given that irradiance refers to the strength of the solar beams in a given location. Interestingly, the strongest negative correlation with photovoltaic output was total cloud cover, having even more of an impact than irradiance. This exemplifies one of the primary challenges with solar energy, in that cloud cover blocking the sun can dramatically harm energy output. Other key correlations include elevation, total precipitation, vegetation cover height, and sea level pressure.</p>
+</section>
+<section id="model-design" class="level3">
+<h3 class="anchored" data-anchor-id="model-design">4.3 Model Design</h3>
+<p>We constructed a sequential neural network using PyTorch to try and predict the PVO based on our collected data. We used three linear layers (decreasing by 2-4 neurons with each layer) with a non-linear activation function between each layer. We experimented with a model where we used ReLU functions and one where we used sigmoid activation functions. We evaluated the loss at each epoch and used the stochastic gradient descent optimizer with a learning rate of 0.01. We determined through trial and error that stochastic gradient descent was a more effective optimizer for this problem than Adam and that a learning rate of 0.01 was sufficient to accurately train the model without overfitting. The code for our LinearModel class is shown below. For the models that we used the sigmoid activation function, we replaced all <code>ReLU()</code> calls with a <code>Sigmoid()</code> call.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">class</span> LinearModel(nn.Module):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, all_feats <span class="op">=</span> <span class="va">False</span>): <span class="co"># "all_feats" arg. passed from above</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>            </span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Initialize nn.Module object</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>            <span class="bu">super</span>().<span class="fu">__init__</span>()</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Matrix alignment depending on if all features are used</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>            <span class="cf">if</span> all_feats:</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                init_feats <span class="op">=</span> <span class="dv">13</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">else</span>:</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                init_feats <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>            <span class="co"># Basic linear model pipeline</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.pipeline <span class="op">=</span> nn.Sequential(</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>                nn.Linear(init_feats, <span class="dv">10</span>),</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>                ReLU(),</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>                nn.Linear(<span class="dv">10</span>, <span class="dv">6</span>),</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>                ReLU(),</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>                nn.Linear(<span class="dv">6</span>,<span class="dv">2</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>                ReLU(),</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>                nn.Linear(<span class="dv">2</span>,<span class="dv">1</span>)</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>            )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="model-training-evaluation" class="level3">
+<h3 class="anchored" data-anchor-id="model-training-evaluation">4.4 Model Training &amp; Evaluation</h3>
+<p>Before feeding our data to the neural network, we rescaled it using a standard scaling and separated the PVO column into a separate target column. Using SciKit-Learn’s <code>train_test_split()</code> function, we divided the data into a training and testing dataset where 30% of the data was reserved for testing. We batched each dataset using the torch dataloader <code>torch.utils.data.DataLoader()</code> into batches of size 32.</p>
+<p>In our preliminary data analysis, we found that irradiance had a strong correlation with PVO. To determine how impactful this would be on the accuracy of our model, we trained models both with and without the irradiance feature and compared their testing losses. The <code>init_feats</code> parameter in our model archietecture accounts for this, allowing the model to accept a dataset that may or may not contain the irradiance feature. We thus trained four models: Irradiance included with ReLU activation, Irradiance included with sigmoid activation, Irradiance excluded with ReLU activation, Irradiance excluded with sigmoid activation. We trained each for 100 epochs on the GPUs provided by the Middlebury College Physics Department research computers. The entire code for our model can be found <a href="https://github.com/andrewdean1/solar-searcher/blob/main/Notebooks/Models/models.py">here</a>.</p>
+<p>To compare our approach to existing models, we trained a linear regression model and polynomial regression model from SciKit-Learn on our data as well. We evaluated the testing loss using mean squared error, allowing us to directly compare the <code>sklearn</code> models to our own. We comapre each of these approaches in the results section.</p>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>5. Results</h1>
+Using a Mean Squared Error loss function, we tracked the progress of each of our models and then used the testing loss after the final epoch to evaluate how well our model performed when predicting PVO. We show the loss plots for our four models below.
+<figure class="figure">
+<img src="images/Loss 4Panel.PNG" alt="Loss plots" class="figure-img">
+<figcaption>
+<b>Figure 7: Training and Testing Loss</b>.
+</figcaption>
+</figure>
+<p>Based on these plots, it appears that the sigmoid mdoels had a much smoother improvement in loss, but ultimately converged to a slightly higher loss value than the ReLU models. We observe the best testing loss with the Irradiance ReLU model with a MSE of <span class="math inline">\(0.0058\)</span> and the worst testing loss with the No Irradiance Sigmoid model with a MSE of <span class="math inline">\(0.0079\)</span>. The table below shows the testing loss for each model.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Model</th>
+<th>MSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Irradiance ReLU</td>
+<td><span class="math inline">\(0.0058\)</span></td>
+</tr>
+<tr class="even">
+<td>Irradiance Sigmoid</td>
+<td><span class="math inline">\(0.0065\)</span></td>
+</tr>
+<tr class="odd">
+<td>No Irradiance ReLU</td>
+<td><span class="math inline">\(0.0071\)</span></td>
+</tr>
+<tr class="even">
+<td>No Irradiance Sigmoid</td>
+<td><span class="math inline">\(0.0079\)</span></td>
+</tr>
+<tr class="odd">
+<td>Sklearn Linear Model</td>
+<td><span class="math inline">\(0.0104\)</span></td>
+</tr>
+<tr class="even">
+<td>Sklearn Third Order Polynomial Model</td>
+<td><span class="math inline">\(0.0050\)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Each of our neural network models outperformed the standard SKlearn linear model, meaning the increase in parameters due to deep learning allowed for an improvement in our predictive abilities. However, our best model still underperformed the SKlearn polynomial regression model, meaning there is room for improvement in our deep learning models. We could potentially achieve this by training our models for more epochs, adjusting the parameters in each layer of our model, or implementing non-linear archietecture such as a convolutional neural netowrk to better train to the data. Despite the varying efficacy of these models, all are able to achieve very low loss values relative to the actual PVO values.</p>
+<p>Utilizing the Irradiance ReLU model, we created a map that comprehensively showcases our end results. The map visualizes predicted photovoltaic (PV) output across the United States, displaying both actual and predicted values for various locations. The interactive visualization uses color intensity to represent the predicted solar energy production potential, allowing for comparison between actual and model-predicted values throughout different geographic regions. The map is shown below.</p>
+<iframe src="interactive_plot.html" width="100%" height="600px" frameborder="0">
+</iframe>
+</section>
+<section id="discussion" class="level1">
+<h1>6. Discussion</h1>
+<p>We set out to answer a simple but high-stakes question: <em>Can we predict the potential solar energy output across the United States?</em> By fusing publicly available irradiance, climate, elevation, and historical PV-output data onto a unified 4-km grid, we trained and benchmarked several regression models, ultimately creating a model architecture that was highly accurate nationwide. The predictions are shown through an interactive map that anyone can easily explore. In short, our project turns scattered open data into an actionable siting tool, closing the gap between technical resource assessments and real-world solar deployment decisions.</p>
+<p>In the end, we achieved the core objectives that we set at the start. Our minimum-viable goal was to turn the open data we collected into a working model that reliably predicts photovoltaic output across the U.S. and present those predictions in an easily digestible format. Despite initially exploring wind and hydro, we discovered that collecting, cleaning, and combining the solar-specific data alone was a substantial undertaking, thus we decided to only focus on solar, while still expressing interest in wind and hydro interest in potential future work (which will be discussed in more detail below).</p>
+<p>Compared with earlier regional studies, our models are competitive – even after scaling the problem to the entire continental United States. Munawar &amp; Wang <span class="citation" data-cites="Munawar2020">(<a href="#ref-Munawar2020" role="doc-biblioref">Munawar and Wang 2020</a>)</span> reported a 4% normalized RMSE (nRMSE) for short-term PV forecasts in Hawai‘i using XGBoost + PCA, and Jebli et al.<span class="citation" data-cites="JEBLI2021120109">(<a href="#ref-JEBLI2021120109" role="doc-biblioref">Jebli et al. 2021</a>)</span> achieved a 6% nRMSE with an ANN in semi-arid Morocco. By contrast, our best nationwide model – the Irradiance-ReLU network – delivers a 2%* nRMSE and cuts mean-squared error by 44% relative to a plain sklearn linear regression baseline (0.0058 vs 0.0104). That said, sklearn’s third-order polynomial regressor edges out the neural network (MSE = 0.0050), reminding us that good feature engineering can sometimes outperform added model depth. In short, we match or surpass the accuracy of the regional studies while covering a far larger, more diverse geography, and we do so with models that remain tractable for potential real-world use.</p>
+<p>**Normalized RMSE was computed by first converting MSE to RMSE, then normalizing by the average PVO (about 4 kWh/kWp).*</p>
+<p><span class="math display">\[\text{nRMSE}=\frac{\sqrt{\text{MSE}}}{\bar{\text{PVO}}} =\frac{\sqrt{0.0058}}{4.0\ \text{kWh/kWp}^{-1}}\approx0.019\;(\text{≈ 2 \%})\]</span></p>
+<p>With additional time, more data, and stronger compute, we would push the project in 3 potential further directions. First, we’d incorporate other renewables – wind and hydro – by sourcing high-resolution wind‐resource and streamflow archives and integrating them into our 4 km grid. This would give much more context for potential renewable energy development, giving a more comprehensive view of which renewable source might be best suited for a certain location. Second, we’d move from a yearly climatology average to more time-specific data, potentially refining our data to utilize daily or hourly measurements. This would allow our models to capture swings in our features, shedding light on potentially crucial intricacies of solar farm developments, such as panel tilt optimization, shading and soil losses, and overall more time-specific weather fluctuations. Third, we’d overlay economic and land-use constraints – site cost, permitting zones, grid capacity – and compute the levelized cost of energy (LCOE) rather than just kWh/kWp. By combining predicted energy yields with spatial cost surfaces and zoning maps, we could pinpoint sites that minimize LCOE or maximize return on investment. On the modeling side, more compute would let us train deeper neural architectures, hypertune our loss functions and activations, and deploy active-learning loops that continually refine forecasts as new utility-scale production data arrive, allowing us to provide more real time predictions. Together, these enhancements would evolve our prototype into a production-grade platform for optimally siting clean energy systems at continental scale.</p>
+</section>
+<section id="group-contribution-statement" class="level1">
+<h1>7. Group Contribution Statement</h1>
+<p>Overall, we worked together on the writing of this blog post (except, of course, for the personal reflection).</p>
+<section id="omar-armbruster" class="level3">
+<h3 class="anchored" data-anchor-id="omar-armbruster">7.1 Omar Armbruster</h3>
+<p>Omar worked on collecting and compiling the weather data used in our dataset. Using the weather data, he was able to create some preliminary heatmaps to visualize the features in different regions of the U.S. He also built the foundation of the neural network (including features like model saving and loading), built the data processing pipeline, and wrote the scripts needed to train the model on the physics department computers remotely. He led the writing of the methods section and the weather data section of this blog post and wrote the loss discussion in the results section.</p>
+</section>
+<section id="andrew-dean" class="level3">
+<h3 class="anchored" data-anchor-id="andrew-dean">7.2 Andrew Dean</h3>
+<p>Andrew collected irradiance data from NREL and developed initial visualizations to explore spatial patterns across the U.S. He then collaborated with Col to merge this irradiance data with Photovoltaic Output (PVO) metrics, calculating annual averages for each feature at every coordinate point. To synthesize the results, Andrew produced an interactive U.S. map using <code>plotly</code>, standardizing the input features and applying Omar’s pre-trained neural network to generate predicted PV values. Each point on the map displays both actual and predicted PV outputs, enabling clear visual comparison. He led the writing of the irradiance and discussion sections of this blog post, and contributed to the results section.</p>
+</section>
+<section id="col-mcdermott" class="level3">
+<h3 class="anchored" data-anchor-id="col-mcdermott">7.3 Col McDermott</h3>
+<p>Contributing to the source code, Col collected and cleaned the potential photovoltaic output data from the GSA. He then collaborated with Andrew to merge the GHI and PVO data into a single dataset of solar information, collapsing the combined data into the overall annual average (across all <span class="math inline">\(12\)</span> months) of each feature for every coordinate data point. Additionally, Col worked alongside Andrew and Noah to combine the solar and weather/elevation data into a single curated dataset. Constructing the full dataset involved incorporating a <code>cKDTree</code> from the <code>scipy</code> library to merge datasets with different latitude-longitude resolutions while maintaining a sufficient number of data points and ensuring the absence of any null values. With the full dataset established, Col created some preliminary visualizations to observe potential trends and relationships between various features. Col also assisted with debugging the model design and improving the training scripts. For the project report, Col wrote the abstract and introduction sections (involving research on present-day climate events and some related work in the field) as well as the brief discussion on PVO data collection. In addition to contributing these components, Col worked on organizing and tidying the layout of the full written report.</p>
+</section>
+<section id="noah-price" class="level3">
+<h3 class="anchored" data-anchor-id="noah-price">7.4 Noah Price</h3>
+<p>Noah began the project working on collecting elevation data for our dataset, which involved establishing a connection to the Google Maps Elevation API using a private key system. He then worked on combining the data from each of our data sources, which involved rescaling the coarseness of the latitude and longitude for some features so that they could be joined with the climate data. With the data in place, he debugged and made improvements to the neural network architecture and infrastructure to optimize the model’s performance and created data visualizations for preliminary data analysis. He led the writing of the values section, combining the data section, and elevation data section of this blog post.</p>
+</section>
+</section>
+<section id="personal-reflection" class="level1">
+<h1>8. Personal Reflection</h1>
+<p>This project was a great way to practice the entire data processing and model-building pipeline, which will be useful for proceeding with future machine learning projects. I thought it was very interesting to apply the methods we have learned in class to empirical data and use our models to make predictions that could give us meaningful insight into real and important issues. I really enjoyed getting to research and work with data pertaining to climate and renewable energy as this is not a topic I typically do much with in my daily studies. I thought it was both interesting and challenging to work with geospatial data, which required us to format our data so we could work with the latitude and longitude values corresponding to the U.S., which was especially important when creating our heatmaps. I also learned a lot from working on this project in a group, as we had to coordinate our efforts and delegate the responsibilites so that we could be as efficient as possible. This sometimes took some extra work to make sure we could fit all of our individual pieces together (such as when we were combining our data), but I believe this ultimately allowed us to produce a higher quality project.</p>
+<p>I am somewhat satisfied with what we achieved. While we did fall short of some of our goals (performing a cost analysis and applying other forms of renewable energy), we were still able to build a strong model that was able to predict solar output on par with similar models from SKlearn and were able to produce engaging and interactive heatmaps with our predictions. Our shortcomings with our deliverables were likely due to the challenging data processing steps. While we had access to a lot of data, it was challenging to find the specific data we needed and it was more challenging to combine the data that we did have. In light of this, I am very pleased with what we were able to accomplish and I feel that we were able to construct a consistent and meaningful dataset. While our neural network architecture was fairly straightforward, I enjoyed getting to examine questions like “Does Irradiance heavily impact the model?” and “How does activation function impact the model?” as it allowed us to dive deeper into the inner workings of our model and examine how different parameters influenced predictive outcomes. We were not originally planning on comparing our models to the standard SKlearn model, but I feel that this also added an extra layer of nuance and investigation to our project. We were able to give some thought into how we could adapt our data to be used in a CNN (potentially by creating multi-channel images where each variable corresponds to a channel and then breaking the entire latitude-longitude set into smaller squares to create testing and training data), but unfortunately did not have time to actually implement it. Should we choose to ever pick up on this project, I think it would be interesting to explore this, as a CNN could potentially lead to increases in accuracy that we could use to outperform the SKlearn polynomial regression model.</p>
+<p>Overall, I thought we had a fairly successful project and I enjoyed getting to explore data in a field of study that I typically don’t interact with. I think the process of working in a group on data projects as well as practicing working with and processing data from a variety of sources will be very valuable in my future endeavors as a data scientist. Throughout this process we had to be creative and persistant to find the optimal way of sourcing and combining our data, which I believe will come in handy when dealing with difficult data in the future. I also think the process of building neural networks from scratch and analyzing the strengths and weaknesses of different models will be very important for just about any machine learning project I choose to undertake in the future.</p>
+</section>
+<section id="references" class="level1">
+<h1>9. References</h1>
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+
+
+<div id="ref-Alzubaidi2022" class="csl-entry" role="listitem">
+Alzubaidi, Laith, Jinglan Zhang, Ali J. Humaidi, Abdulmuttalib Al-Dujaili, Yuxuan Duan, Omar Al-Shamma, Juan Santamaría, Mohammed A. Fadhel, Mohammed Al-Amidie, and Laith Farhan. 2022. <span>“Review of Deep Learning: Concepts, CNN Architectures, Challenges, Applications, Future Directions.”</span> <em>Journal of Big Data</em> 9 (1): 1–74. <a href="https://doi.org/10.1155/2022/7797488">https://doi.org/10.1155/2022/7797488</a>.
+</div>
+<div id="ref-google_elevation_api" class="csl-entry" role="listitem">
+Google Developers. 2024. <span>“Elevation API Overview.”</span> <a href="https://developers.google.com/maps/documentation/elevation/overview">https://developers.google.com/maps/documentation/elevation/overview</a>.
+</div>
+<div id="ref-Hersbach2023" class="csl-entry" role="listitem">
+Hersbach, Hans, B. Bell, P. Berrisford, G. Biavati, A. Horányi, J. Muñoz Sabater, J. Nicolas, et al. 2023. <span>“ERA5 Monthly Averaged Data on Single Levels from 1940 to Present.”</span> Copernicus Climate Change Service (C3S) Climate Data Store (CDS). <a href="https://doi.org/10.24381/cds.f17050d7">https://doi.org/10.24381/cds.f17050d7</a>.
+</div>
+<div id="ref-Igini2023" class="csl-entry" role="listitem">
+Igini, Martina. 2023. <span>“What Are the Advantages and Disadvantages of Solar Energy?”</span> <a href="https://earth.org/what-are-the-advantages-and-disadvantages-of-solar-energy/">https://earth.org/what-are-the-advantages-and-disadvantages-of-solar-energy/</a>.
+</div>
+<div id="ref-JEBLI2021120109" class="csl-entry" role="listitem">
+Jebli, Imane, Fatima-Zahra Belouadha, Mohammed Issam Kabbaj, and Amine Tilioua. 2021. <span>“Prediction of Solar Energy Guided by Pearson Correlation Using Machine Learning.”</span> <em>Energy</em> 224: 120109. https://doi.org/<a href="https://doi.org/10.1016/j.energy.2021.120109">https://doi.org/10.1016/j.energy.2021.120109</a>.
+</div>
+<div id="ref-Munawar2020" class="csl-entry" role="listitem">
+Munawar, Usman, and Zhifang Wang. 2020. <span>“A Framework of Using Machine Learning Approaches for Short-Term Solar Power Forecasting.”</span> <em>Journal of Electrical Engineering &amp; Technology</em> 15 (2): 561–69. <a href="https://doi.org/10.1007/s42835-020-00346-4">https://doi.org/10.1007/s42835-020-00346-4</a>.
+</div>
+<div id="ref-nrel2025" class="csl-entry" role="listitem">
+National Renewable Energy Laboratory. 2025. <span>“Solar Resource Maps and Data Portal.”</span> <a href="https://www.nrel.gov/gis/solar-resource-maps">https://www.nrel.gov/gis/solar-resource-maps</a>.
+</div>
+<div id="ref-solargis_solar_radiation" class="csl-entry" role="listitem">
+Solargis. n.d. <span>“Solar Radiation.”</span> <a href="https://kb.solargis.com/docs/solar-radiation" class="uri">https://kb.solargis.com/docs/solar-radiation</a>.
+</div>
+<div id="ref-WorldBank2019" class="csl-entry" role="listitem">
+The World Bank Group, ESMAP, and Solargis. 2019. <span>“Global Solar Atlas 2.0: LTAy_AvgDailyTotals (GeoTIFF) – USA Solar Resource Data.”</span> <a href="https://globalsolaratlas.info/download/usa" class="uri">https://globalsolaratlas.info/download/usa</a>.
+</div>
+<div id="ref-who2023" class="csl-entry" role="listitem">
+World Health Organization. 2023. <span>“Climate Change and Health.”</span> <a href="https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health">https://www.who.int/news-room/fact-sheets/detail/climate-change-and-health</a>.
+</div>
+<div id="ref-wwf2024" class="csl-entry" role="listitem">
+World Wildlife Fund. 2024. <span>“Catastrophic 73% Decline in the Average Size of Global Wildlife Populations in Just 50 Years Reveals a System in Peril.”</span> <a href="https://www.worldwildlife.org/press-releases/catastrophic-73-decline-in-the-average-size-of-global-wildlife-populations-in-just-50-years-reveals-a-system-in-peril">https://www.worldwildlife.org/press-releases/catastrophic-73-decline-in-the-average-size-of-global-wildlife-populations-in-just-50-years-reveals-a-system-in-peril</a>.
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

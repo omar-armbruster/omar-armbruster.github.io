@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/solar-searcher/index.html",
       "/posts/advanced-optimization/index.html",
       "/posts/double-descent/index.html",
       "/posts/logistic-regression/index.html",
